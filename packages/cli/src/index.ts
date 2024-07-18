@@ -1,16 +1,25 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { startDevelopmentServer } from '@steinjs/core';
+import { devModule } from './modules/dev';
+import { createModule } from './modules/create';
 
-const program = new Command()
-  .name("stein")
-  .parse(process.argv);
+const program = new Command();
 
-switch (program.args[0]) {
-  case "dev":
-    await startDevelopmentServer(process.cwd());
-    break;
-  default:
-    console.error("Command not found.");
-    break;
-}
+program
+  .name('stein')
+  .description('CLI to run projects and scaffold a new stein project')
+  .version('0.1.0');
+
+program.command('dev')
+  .description('Split a string into substrings and display as an array')
+  .action(async (str, options) => {
+    await devModule(str, options);
+});
+
+program.command('create')
+  .description('Split a string into substrings and display as an array')
+  .action(async (str, options) => {
+    await createModule(str, options)
+});
+
+program.parse();
