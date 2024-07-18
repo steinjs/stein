@@ -1,0 +1,12 @@
+{
+  "name": "bare",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "scripts": {
+    "dev": "stein dev"
+  },
+  "devDependencies": {
+    "@steinjs/cli": "workspace:*"
+  }
+}

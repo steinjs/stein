@@ -1,8 +1,26 @@
 {
-  "name": "core",
+  "name": "@steinjs/core",
   "version": "0.0.0",
   "license": "MIT",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "devDependencies": {
+    "@types/node": "^20.14.11",
+    "tsup": "^8.1.2",
     "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "vite": "^5.3.4"
   }
 }
