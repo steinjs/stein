@@ -16,6 +16,7 @@ import color from 'picocolors';
 
 import { downloadTemplate } from "giget";
 import { installDependencies } from "nypm";
+import { spawn, spawnSync } from "node:child_process";
 
 export const createModule = async (str: any, options: any) => {
     // Logic for creating app
@@ -30,6 +31,7 @@ const setupWizard = async (templateLink: string) => {
     const name = await text({
         message: "What is the name of your project?",
         placeholder: "my-stein-project",
+        defaultValue: "my-stein-project",
     });
 
     if (isCancel(name)) {
@@ -151,7 +153,18 @@ const installProjectDependencies = async (projectDir: string) => {
 }
 
 const initGitRepo = async (projectDir: string) => {
-    // Create a new git repo in the project dir
+    const s = spinner();
+    s.start('Initializing git repository...');
+
+    try {
+        spawnSync('git', ['init'], { 
+            cwd: projectDir,
+            stdio: 'ignore'
+        });
+        s.stop('Initialized git repository successfully.');
+    } catch (error) {
+        console.error('Error initializing git repository:', error);
+    }
 }
 
 const installProjectIntegrations = async (projectDir: string, extraPackages: string[]) => {
