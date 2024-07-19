@@ -1,9 +1,9 @@
-import { createServer, PluginOption as VitePluginOption } from "vite";
+import { createServer, type ViteDevServer, PluginOption as VitePluginOption } from "vite";
 import solid from "vite-plugin-solid";
 import type { PartialDeep } from "type-fest";
 import { defu } from "defu";
 
-export const startDevelopmentServer = async (cwd: string, config: SteinConfig): Promise<void> => {
+export const startDevelopmentServer = async (cwd: string, config: SteinConfig): Promise<ViteDevServer> => {
   let solidIndex = 0;
   const plugins: VitePluginOption = [solid()];
 
@@ -23,23 +23,20 @@ export const startDevelopmentServer = async (cwd: string, config: SteinConfig): 
       else plugins.push(vitePlugin);
     }
 
-    if (plugin.vite) {
-      plugins.push(plugin.vite);
-      console.info("registered a stein main vite plugin for:", plugin.name);
-    }
-    
-    console.info("registered a stein plugin:", plugin.name);
+    if (plugin.vite) plugins.push(plugin.vite);
   }
   
   const server = await createServer({
+    configFile: false,
     plugins,
     
     root: cwd,
+    server: { port: config.development.port, strictPort: true },
     clearScreen: false
   });
   
-  await server.listen(config.development.port);
-  console.info(`Stein running SolidJS at http://localhost:${config.development.port}`);
+  await server.listen();
+  return server;
 };
 
 export interface SteinConfig {
