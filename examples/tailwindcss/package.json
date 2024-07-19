@@ -1,0 +1,18 @@
+{
+  "name": "bare",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "stein dev"
+  },
+  "devDependencies": {
+    "@steinjs/cli": "workspace:*",
+    "@steinjs/core": "workspace:*",
+    "stein-plugin-tailwindcss": "workspace:*"
+  },
+  "dependencies": {
+    "solid-js": "^1.8.18"
+  }
+}
