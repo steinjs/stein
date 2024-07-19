@@ -4,15 +4,14 @@
   "license": "MIT",
   "type": "module",
   "files": [
-    "dist"
+    "src"
   ],
   "scripts": {
     "build": "tsup"
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "default": "./src/index.ts"
     }
   },
   "devDependencies": {
