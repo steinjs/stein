@@ -57,7 +57,8 @@ export default definePlugin<Config>((userConfiguration) => {
     vite: {
       name: "stein:unocss",
       enforce: "pre",
-      async resolveId (id) {
+
+      resolveId (id) {
         if (id === UNO_INJECT_ID)
           return id;
       },
@@ -68,8 +69,8 @@ export default definePlugin<Config>((userConfiguration) => {
       },
       
       transformIndexHtml (html) {
-        const lastScriptIndex = html.lastIndexOf('</script>') + '</script>'.length;
-        return html.slice(0, lastScriptIndex) + `<script src="${UNO_INJECT_ID}" type="module"></script>` + html.slice(lastScriptIndex);
+        const endHead = html.indexOf("</head>") + "</head>".length;
+        return html.slice(0, endHead) + `<script src="${UNO_INJECT_ID}" type="module"></script>` + html.slice(endHead);
       }
     }
   } satisfies Plugin;
