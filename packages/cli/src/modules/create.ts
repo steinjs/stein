@@ -33,6 +33,15 @@ const setupWizard = async (templateLink: string) => {
         return process.exit(0);
     }
 
+    const typeScriptEnabled = await confirm({
+        message: "Do you want to use TypeScript?",
+    });
+
+    if (isCancel(typeScriptEnabled)) {
+        cancel("Operation cancelled");
+        return process.exit(0);
+    }
+
     const projectType = await select({
         message: "Pick a project preset.",
         options: [
@@ -99,7 +108,7 @@ const cloneTemplate = async (projectName: string, templateLink: string): Promise
         force: true,
         dir: projectName,
     });
-    s.stop("Successfully downloaded template");
+    s.stop("Successfully downloaded template.");
 
     return dir;
 }
