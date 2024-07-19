@@ -1,6 +1,7 @@
 import { createServer, PluginOption as VitePluginOption } from "vite";
 import solid from "vite-plugin-solid";
 import type { PartialDeep } from "type-fest";
+import { defu } from "defu";
 
 export const startDevelopmentServer = async (cwd: string, config: SteinConfig): Promise<void> => {
   let solidIndex = 0;
@@ -42,22 +43,27 @@ export const startDevelopmentServer = async (cwd: string, config: SteinConfig): 
 };
 
 export interface SteinConfig {
+  /**
+   * Stein plugins to use in the project.
+   * @default []
+   */
   plugins: Plugin[];
 
   development: {
+    /**
+     * The port to run the development server on.
+     * @default 3000
+     */
     port: number;
   }
 }
 
-export const defineConfig = (options: PartialDeep<SteinConfig>): SteinConfig => ({
+export const defineConfig = (options: PartialDeep<SteinConfig>): SteinConfig => defu(options, {
   plugins: [],
-  ...options,
-  
   development: {
     port: 3000,
-    ...options.development
   }
-});
+} satisfies SteinConfig);
 
 export interface Plugin {
   name: string

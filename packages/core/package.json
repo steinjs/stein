@@ -21,6 +21,7 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "defu": "^6.1.4",
     "vite": "^5.3.4",
     "vite-plugin-solid": "^2.10.2"
   }
