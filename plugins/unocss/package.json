@@ -1,0 +1,15 @@
+{
+  "name": "stein-plugin-unocss",
+  "version": "0.0.0",
+  "description": "",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@steinjs/core": "workspace:*"
+  },
+  "dependencies": {
+    "defu": "^6.1.4",
+    "unocss": "^0.61.5"
+  }
+}
