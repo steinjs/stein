@@ -8,4 +8,5 @@ We use the following naming : `stein-plugin-<name>`. If you want to do your own 
 
 ## Listing
 
-- [stein-plugin-unocss](./unocss): an "install and use" plugin for [unocss](https://unocss.dev)
+- [stein-plugin-unocss](./unocss): an "install and use" plugin for [UnoCSS](https://unocss.dev/)
+- [stein-plugin-tailwindcss](./tailwindcss): an "install and use" plugin for [TailwindCSS](https://tailwindcss.com/)
