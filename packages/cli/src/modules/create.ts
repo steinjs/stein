@@ -12,11 +12,13 @@ import {
     text,
     multiselect,
 } from '@clack/prompts';
+import * as clp from '@clack/prompts';
 import color from 'picocolors';
 
 import { downloadTemplate } from "giget";
 import { installDependencies } from "nypm";
 import { spawn, spawnSync } from "node:child_process";
+import { installSteinPlugin } from "../installers/steinPluginInstaller";
 
 export const createModule = async (str: any, options: any) => {
     // Logic for creating app
@@ -33,17 +35,7 @@ const setupWizard = async (templateLink: string) => {
         placeholder: "my-stein-project",
         defaultValue: "my-stein-project",
     });
-
     if (isCancel(name)) {
-        cancel("Operation cancelled");
-        return process.exit(0);
-    }
-
-    const typeScriptEnabled = await confirm({
-        message: "Do you want to use TypeScript?",
-    });
-
-    if (isCancel(typeScriptEnabled)) {
         cancel("Operation cancelled");
         return process.exit(0);
     }
@@ -56,7 +48,6 @@ const setupWizard = async (templateLink: string) => {
             // TODO: add custom presets here here later
         ],
     });
-
     if (isCancel(projectType)) {
         cancel("Operation cancelled");
         return process.exit(0);
@@ -64,24 +55,50 @@ const setupWizard = async (templateLink: string) => {
 
     const extraPackages: string[] = [];
     if (projectType === "custom") {
-        const additionalTools = await multiselect({
-            message: 'Select the features and tools you want to include in your project.',
-            options: [
-                { value: 'unocss', label: 'UnoCSS Plugin' },
-                { value: 'eslint', label: 'ESLint', hint: 'recommended' },
-                { value: 'prettier', label: 'Prettier' },
-            ],
-            required: false,
-        });
+        const group = await clp.group(
+            {
+                // maybe generate these programmatically based on the integrations which are available (TODO)
+                tools: () =>
+                    clp.multiselect({
+                        message: `What tools do you want to install?`,
+                        options: [
+                            { value: 'biome', label: 'Biome', hint: 'recommended'},
+                            { value: 'eslint', label: 'ESLint' },
+                            { value: 'prettier', label: 'Prettier' }
+                        ],
+                    }),
+                plugins: () =>
+                    clp.multiselect({
+                        message: `What plugins do you want to add to your project?`,
+                        options: [
+                            { value: 'unocss', label: 'UnoCSS' },
+                            { value: 'tailwindcss', label: 'TailwindCSS' }
+                        ],
+                    }),
+            },
+            {
+                onCancel: () => {
+                    clp.cancel('Operation cancelled.');
+                    process.exit(0);
+                },
+            }
+        );
 
-        if (isCancel(additionalTools)) {
-            cancel("Operation cancelled");
-            return process.exit(0);
+        if (group.tools && group.tools.length > 0 && Array.isArray(group.tools)) {
+            extraPackages.push(...group.tools as string[]);
         }
 
-        if (additionalTools.length > 0 && Array.isArray(additionalTools)) {
-            extraPackages.push(...additionalTools as string[]);
+        if (group.plugins && group.plugins.length > 0 && Array.isArray(group.plugins)) {
+            extraPackages.push(...group.plugins as string[]);
         }
+    }
+
+    const typeScriptEnabled = await confirm({
+        message: "Do you want to use TypeScript?",
+    });
+    if (isCancel(typeScriptEnabled)) {
+        cancel("Operation cancelled");
+        return process.exit(0);
     }
 
     const projectDir = await cloneTemplate(name, templateLink);
@@ -170,4 +187,15 @@ const initGitRepo = async (projectDir: string) => {
 const installProjectIntegrations = async (projectDir: string, extraPackages: string[]) => {
     // Install integrations here
     console.log(extraPackages);
+
+    const s = spinner();
+    s.start('Installing integrations...');
+
+    //for (const pkg of extraPackages) {
+     await installSteinPlugin("unocss", projectDir);
+    // }
+
+    console.log("A");
+
+    s.stop('Installed tools and integrations successfully.');
 }
