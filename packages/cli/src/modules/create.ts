@@ -1,3 +1,6 @@
+import { promises as fs } from "node:fs"
+import path from "node:path";
+
 import {
     intro,
     outro,
@@ -12,6 +15,7 @@ import {
 import color from 'picocolors';
 
 import { downloadTemplate } from "giget";
+import { installDependencies } from "nypm";
 
 export const createModule = async (str: any, options: any) => {
     // Logic for creating app
@@ -56,6 +60,7 @@ const setupWizard = async (templateLink: string) => {
         return process.exit(0);
     }
 
+    const extraPackages: string[] = [];
     if (projectType === "custom") {
         const additionalTools = await multiselect({
             message: 'Select the features and tools you want to include in your project.',
@@ -66,11 +71,30 @@ const setupWizard = async (templateLink: string) => {
             ],
             required: false,
         });
-        //console.log(additionalTools); Pass these tools to another func to install them
+
+        if (isCancel(additionalTools)) {
+            cancel("Operation cancelled");
+            return process.exit(0);
+        }
+
+        if (additionalTools.length > 0 && Array.isArray(additionalTools)) {
+            extraPackages.push(...additionalTools as string[]);
+        }
     }
 
     const projectDir = await cloneTemplate(name, templateLink);
+    if (typeScriptEnabled) {
+        // delete stein.config.js inside the projectDir using the node fs module
+        await fs.unlink(path.join(projectDir, 'stein.config.js'));
+    }
+    else {
+        // delete tsconfig.json inside the projectDir using the node fs module
+        await fs.unlink(path.join(projectDir, 'tsconfig.json'));
+        await fs.unlink(path.join(projectDir, 'stein.config.ts'));
+    }
+
     // go through all integrations if custom or any present is selected and install/configure them
+    await installProjectIntegrations(projectDir, extraPackages);
 
     const shouldInstallDependencies = await confirm({
         message: "Do you want to install dependencies?",
@@ -117,11 +141,20 @@ const installProjectDependencies = async (projectDir: string) => {
     const s = spinner();
     s.start('Installing dependencies...');
     
-    // Install deps with users package manager here
+    // Install deps with users package manager (currently silent install, maybe change this)
+    await installDependencies({
+        cwd: projectDir,
+        silent: true,
+    });
 
     s.stop('Installed dependencies successfully.');
 }
 
 const initGitRepo = async (projectDir: string) => {
     // Create a new git repo in the project dir
+}
+
+const installProjectIntegrations = async (projectDir: string, extraPackages: string[]) => {
+    // Install integrations here
+    console.log(extraPackages);
 }
