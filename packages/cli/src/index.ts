@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 import { Command } from 'commander';
 import { devModule } from './modules/dev';
 import { createModule } from './modules/create';
