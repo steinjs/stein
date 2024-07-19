@@ -10,6 +10,9 @@ importers:
 
   examples/bare:
     dependencies:
+      '@unocss/reset':
+        specifier: ^0.61.5
+        version: 0.61.5
       solid-js:
         specifier: ^1.8.18
         version: 1.8.18
