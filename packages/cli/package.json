@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@steinjs/core": "workspace:*",
+    "c12": "^1.11.1",
     "commander": "^12.1.0",
     "giget": "^1.2.3"
   }
