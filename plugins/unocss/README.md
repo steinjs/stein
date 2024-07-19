@@ -1,10 +1,14 @@
 # stein-plugin-unocss
 
+Based on [`@unocss/astro`](https://github.com/unocss/unocss/blob/main/packages/astro) integration.
+
 ## Installation
 
 ```bash
-pnpm add -D stein-plugin-unocss
 bun add -D stein-plugin-unocss
+npm add -D stein-plugin-unocss
+yarn add -D stein-plugin-unocss
+pnpm add -D stein-plugin-unocss
 ```
 
 ## Usage
@@ -15,13 +19,24 @@ import unocss from "stein-plugin-unocss";
 
 export default defineConfig({
   plugins: [unocss({
-    // options
+    // options, see below
   })]
 });
+```
+
+If you use `injectReset: true`, make sure to also install `@unocss/reset`:
+
+```bash
+bun add @unocss/reset
+npm add @unocss/reset
+yarn add @unocss/reset
+pnpm add @unocss/reset
 ```
 
 ## Options
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
-| autoImportUno | `boolean` | `true` | Automatically add `import "uno.css";` to the entry point. |
+| `injectEntry` | `boolean` | `true` | Automatically add UnoCSS entry import in the `index.html`. |
+| `injectReset` | `boolean \| string` | `false` | When passing `true`, `@unocss/reset/tailwind.css` will be used. |
+| `injectExtra` | `string[]` | `[]` | Inject extra imports. |
