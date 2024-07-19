@@ -19,9 +19,11 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "@clack/prompts": "^0.7.0",
     "@steinjs/core": "workspace:*",
     "c12": "^1.11.1",
     "commander": "^12.1.0",
-    "giget": "^1.2.3"
+    "giget": "^1.2.3",
+    "picocolors": "^1.0.1"
   }
 }
