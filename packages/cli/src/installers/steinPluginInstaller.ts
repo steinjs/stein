@@ -83,12 +83,10 @@ export const installSteinPlugin = async (pkgName: string, projectDir: string) =>
     await fs.writeFile(configFile, finalCode, 'utf-8');
 
     // After adding the plugin to the config, add the package to the dependencies
-    /*
     await addDependency(`stein-plugin-${pkgName}`,{
         cwd: projectDir,
         dev: true
     });
-    */
     // Also install the actual package for the integration
     if (pkgName === "unocss") {
         // Add the UnoCSS reset as a dependency
