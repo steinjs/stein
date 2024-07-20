@@ -6,7 +6,7 @@
     "lint": "turbo lint",
     "build": "turbo build",
     "version-all": "changeset version",
-    "publish-all": "pnpm build && pnpm lint changeset publish"
+    "publish-all": "pnpm build && pnpm lint && changeset publish"
   },
   "workspaces": [
     "packages/*",
