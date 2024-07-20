@@ -22,7 +22,7 @@ import { installSteinPlugin } from "../installers/steinPluginInstaller";
 
 export const createModule = async (str: any, options: any) => {
     // Logic for creating app
-    const bareTemplateLink = "github:stein-js/stein/examples/bare";
+    const bareTemplateLink = "github:steinjs/stein/examples/bare";
 
     await setupWizard(bareTemplateLink);
 }
