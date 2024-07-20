@@ -163,12 +163,19 @@ const installProjectDependencies = async (projectDir: string) => {
     s.start('Installing dependencies...');
     
     // Install deps with users package manager (currently silent install, maybe change this)
-    await installDependencies({
-        cwd: projectDir,
-        silent: true,
-    });
+    try {
+        await installDependencies({
+            cwd: projectDir,
+            silent: true,
+        });
 
-    s.stop('Installed dependencies successfully.');
+        s.stop('Installed dependencies successfully.');
+    }
+    catch (err) {
+        console.error(err);
+        s.stop("Failed installing dependencies, skipping...");
+    }
+
 }
 
 const initGitRepo = async (projectDir: string) => {
@@ -183,6 +190,7 @@ const initGitRepo = async (projectDir: string) => {
         s.stop('Initialized git repository successfully.');
     } catch (error) {
         console.error('Error initializing git repository:', error);
+        s.stop("Failed initializing git repository, skipping...");
     }
 }
 
@@ -194,7 +202,12 @@ const installProjectIntegrations = async (projectDir: string, extraPackages: str
     s.start('Installing integrations...');
 
     for (const pkg of extraPackages) {
-        await installSteinPlugin(pkg, projectDir);
+        try {
+            await installSteinPlugin(pkg, projectDir);
+        }
+        catch (err: any) {
+            console.error(err);
+        }
     }
 
     s.stop('Installed tools and integrations successfully.');
