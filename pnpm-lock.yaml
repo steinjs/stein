@@ -10,9 +10,6 @@ importers:
 
   examples/bare:
     dependencies:
-      '@unocss/reset':
-        specifier: ^0.61.5
-        version: 0.61.5
       solid-js:
         specifier: ^1.8.18
         version: 1.8.18
@@ -23,9 +20,6 @@ importers:
       '@steinjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      stein-plugin-unocss:
-        specifier: workspace:*
-        version: link:../../plugins/unocss
 
   examples/tailwindcss:
     dependencies:
