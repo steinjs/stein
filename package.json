@@ -3,6 +3,7 @@
   "packageManager": "pnpm@9.4.0",
   "version": "0.0.0",
   "scripts": {
+    "dev": "turbo dev",
     "lint": "turbo lint",
     "build": "turbo build",
     "version-all": "changeset version",
