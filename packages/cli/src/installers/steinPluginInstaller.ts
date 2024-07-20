@@ -1,6 +1,6 @@
 import fs from "node:fs/promises"
+import path from "node:path";
 
-import { loadConfig } from "c12";
 import { addDependency } from "nypm";
 
 import * as babel from "@babel/core";
@@ -16,11 +16,16 @@ export const installSteinPlugin = async (pkgName: string, projectDir: string) =>
         installToolIntegration(pkgName);
     }
 
-    // Installation logic here, use magicast to add import for plugin at the top and put function into array
-    const {configFile} = await loadConfig({
-        cwd: projectDir,
-        name: "stein"
-    });
+    // Find stein.config.ts or stein.config.js file and return the full path by searching what file exists inside projectDir
+    const tsConfigExists = await fs.access(
+        path.join(projectDir, "stein.config.ts"), fs.constants.F_OK
+    ).then(() => true).catch(() => false);
+
+    const jsConfigExists = await fs.access(
+        path.join(projectDir, "stein.config.js"), fs.constants.F_OK
+    ).then(() => true).catch(() => false);
+
+    const configFile = tsConfigExists ? path.join(projectDir, "stein.config.ts") : jsConfigExists ? path.join(projectDir, "stein.config.js") : undefined;
 
     if (!configFile) {
         throw new Error(`Could not find a stein config file in ${projectDir}`);
