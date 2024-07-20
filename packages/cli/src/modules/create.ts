@@ -111,6 +111,8 @@ const setupWizard = async (templateLink: string) => {
     else {
         // delete tsconfig.json inside the projectDir using the node fs module
         await fs.unlink(path.join(projectDir, 'tsconfig.json'));
+        await fs.unlink(path.join(projectDir, 'tsconfig.app.json'));
+        await fs.unlink(path.join(projectDir, 'tsconfig.node.json'));
         await fs.unlink(path.join(projectDir, 'stein.config.ts'));
     }
 
