@@ -11,12 +11,12 @@ import generate from "@babel/generator";
 const availableSteinPlugins = ['unocss', 'tailwindcss'];
 const availableToolIntegrations = ['biome', 'eslint', 'prettier'];
 
+/**
+ * @description Installs a stein plugin and adds it to the stein.config.ts file
+ * @param pkgName The name of the plugin to install
+ * @param projectDir The directory of the project
+ */
 export const installSteinPlugin = async (pkgName: string, projectDir: string) => {
-    /**
-     * @description Installs a stein plugin and adds it to the stein.config.ts file
-     * @param pkgName The name of the plugin to install
-     * @param projectDir The directory of the project
-     */
     if (!availableSteinPlugins.includes(pkgName)) {
         installToolIntegration(pkgName);
     }
