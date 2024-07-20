@@ -3,7 +3,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": true,
   "fixed": [],
-  "linked": [["@steinjs/*", "stein-plugin-*"]],
+  "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
