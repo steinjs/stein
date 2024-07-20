@@ -12,6 +12,11 @@ const availableSteinPlugins = ['unocss', 'tailwindcss'];
 const availableToolIntegrations = ['biome', 'eslint', 'prettier'];
 
 export const installSteinPlugin = async (pkgName: string, projectDir: string) => {
+    /**
+     * @description Installs a stein plugin and adds it to the stein.config.ts file
+     * @param pkgName The name of the plugin to install
+     * @param projectDir The directory of the project
+     */
     if (!availableSteinPlugins.includes(pkgName)) {
         installToolIntegration(pkgName);
     }
@@ -92,7 +97,7 @@ export const installSteinPlugin = async (pkgName: string, projectDir: string) =>
         cwd: projectDir,
         dev: true
     });
-    // Also install the actual package for the integration
+    
     if (pkgName === "unocss") {
         // Add the UnoCSS reset as a dependency
         await addDependency("@unocss/reset", {
