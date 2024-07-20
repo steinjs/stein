@@ -1,6 +1,6 @@
 {
   "name": "stein-plugin-tailwindcss",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Stein plugin for TailwindCSS.",
   "license": "MIT",
   "type": "module",

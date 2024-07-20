@@ -1,6 +1,6 @@
 {
   "name": "stein-plugin-unocss",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Stein plugin for UnoCSS.",
   "license": "MIT",
   "type": "module",
