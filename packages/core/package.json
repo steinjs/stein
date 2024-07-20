@@ -10,7 +10,7 @@
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch",
+    "watch": "tsup --watch",
     "lint": "tsc"
   },
   "exports": {
