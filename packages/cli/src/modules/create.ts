@@ -60,12 +60,13 @@ const setupWizard = async (templateLink: string) => {
                 // maybe generate these programmatically based on the integrations which are available (TODO)
                 tools: () =>
                     clp.multiselect({
-                        message: `What tools do you want to install?`,
+                        message: `What tools do you want to install? (Note: tools are not available yet)`,
                         options: [
                             { value: 'biome', label: 'Biome', hint: 'recommended'},
                             { value: 'eslint', label: 'ESLint' },
                             { value: 'prettier', label: 'Prettier' }
                         ],
+                        required: false 
                     }),
                 plugins: () =>
                     clp.multiselect({
@@ -74,6 +75,7 @@ const setupWizard = async (templateLink: string) => {
                             { value: 'unocss', label: 'UnoCSS' },
                             { value: 'tailwindcss', label: 'TailwindCSS' }
                         ],
+                        required: false
                     }),
             },
             {
@@ -191,11 +193,9 @@ const installProjectIntegrations = async (projectDir: string, extraPackages: str
     const s = spinner();
     s.start('Installing integrations...');
 
-    //for (const pkg of extraPackages) {
-     await installSteinPlugin("unocss", projectDir);
-    // }
-
-    console.log("A");
+    for (const pkg of extraPackages) {
+        await installSteinPlugin(pkg, projectDir);
+    }
 
     s.stop('Installed tools and integrations successfully.');
 }
