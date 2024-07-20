@@ -22,11 +22,11 @@ importers:
         version: 1.8.18
     devDependencies:
       '@steinjs/cli':
-        specifier: workspace:*
-        version: link:../../packages/cli
+        specifier: latest
+        version: 0.0.1(@types/node@20.14.11)(magicast@0.3.4)(solid-js@1.8.18)(terser@5.31.3)
       '@steinjs/core':
-        specifier: workspace:*
-        version: link:../../packages/core
+        specifier: latest
+        version: 0.0.1(@types/node@20.14.11)(solid-js@1.8.18)(terser@5.31.3)
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
@@ -1298,6 +1298,13 @@ packages:
     resolution: {integrity: sha512-yjk2MAkQmoaPYCSu35RLJ62+dz358nE83VfTePJRp8CG7aMg25mEJYpXFiD+NcevhX8LxD5OP5tktPXnXN7GDw==}
     cpu: [x64]
     os: [win32]
+
+  '@steinjs/cli@0.0.1':
+    resolution: {integrity: sha512-gGKzZwL3gv6xR8TevmZUz2kqsqVt9vx5mHrbYr4cA1Ms8pUUEBw00CPWoQTZ9gcB9jLOuw6uQgy+qXhFEhUuXQ==}
+    hasBin: true
+
+  '@steinjs/core@0.0.1':
+    resolution: {integrity: sha512-mLG0U0yQkkBj7mSn8ILj6qgrSAx76rhWarcmp9iKwNAG+NWYHb8RinB5rtc9vFQtUYZz1p8aSS33loxdu7WgaQ==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -3969,6 +3976,52 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.18.1':
     optional: true
+
+  '@steinjs/cli@0.0.1(@types/node@20.14.11)(magicast@0.3.4)(solid-js@1.8.18)(terser@5.31.3)':
+    dependencies:
+      '@babel/core': 7.24.9
+      '@babel/generator': 7.24.10
+      '@babel/plugin-syntax-typescript': 7.24.7(@babel/core@7.24.9)
+      '@babel/preset-env': 7.24.8(@babel/core@7.24.9)
+      '@babel/preset-typescript': 7.24.7(@babel/core@7.24.9)
+      '@babel/traverse': 7.24.8
+      '@babel/types': 7.24.9
+      '@clack/prompts': 0.7.0
+      '@steinjs/core': 0.0.1(@types/node@20.14.11)(solid-js@1.8.18)(terser@5.31.3)
+      c12: 1.11.1(magicast@0.3.4)
+      commander: 12.1.0
+      giget: 1.2.3
+      nypm: 0.3.9
+      picocolors: 1.0.1
+    transitivePeerDependencies:
+      - '@testing-library/jest-dom'
+      - '@types/node'
+      - less
+      - lightningcss
+      - magicast
+      - sass
+      - solid-js
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+
+  '@steinjs/core@0.0.1(@types/node@20.14.11)(solid-js@1.8.18)(terser@5.31.3)':
+    dependencies:
+      defu: 6.1.4
+      vite: 5.3.4(@types/node@20.14.11)(terser@5.31.3)
+      vite-plugin-solid: 2.10.2(solid-js@1.8.18)(vite@5.3.4(@types/node@20.14.11)(terser@5.31.3))
+    transitivePeerDependencies:
+      - '@testing-library/jest-dom'
+      - '@types/node'
+      - less
+      - lightningcss
+      - sass
+      - solid-js
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
 
   '@types/babel__core@7.20.5':
     dependencies:
