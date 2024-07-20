@@ -8,8 +8,8 @@
     "lint": "tsc"
   },
   "devDependencies": {
-    "@steinjs/cli": "workspace:*",
-    "@steinjs/core": "workspace:*",
+    "@steinjs/cli": "latest",
+    "@steinjs/core": "latest",
     "typescript": "^5.5.3"
   },
   "dependencies": {
