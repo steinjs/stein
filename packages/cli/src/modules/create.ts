@@ -115,7 +115,9 @@ const setupWizard = async (templateLink: string) => {
     }
 
     // go through all integrations if custom or any present is selected and install/configure them
-    await installProjectIntegrations(projectDir, extraPackages);
+    if (extraPackages.length > 0) {
+        await installProjectIntegrations(projectDir, extraPackages);
+    }
 
     const shouldInstallDependencies = await confirm({
         message: "Do you want to install dependencies?",
