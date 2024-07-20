@@ -15,7 +15,13 @@ import {
 import * as clp from '@clack/prompts';
 import color from 'picocolors';
 
-import { downloadTemplate } from "giget";
+// Fixes an issue with "tar" (used in "giget") on Windows when using Bun.
+// @ts-expect-error : see https://github.com/oven-sh/bun/issues/12696
+const needTarWorkaround = typeof Bun !== "undefined" && process.platform === "win32";
+if (needTarWorkaround) process.env.__FAKE_PLATFORM__ = "linux";
+const { downloadTemplate } = await import("giget");
+if (needTarWorkaround) delete process.env.__FAKE_PLATFORM__;
+
 import { installDependencies } from "nypm";
 import { spawn, spawnSync } from "node:child_process";
 import { installSteinPlugin } from "../installers/steinPluginInstaller";
