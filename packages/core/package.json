@@ -1,21 +1,27 @@
 {
   "name": "@steinjs/core",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.0.0",
+  "description": "Core of SteinJS.",
   "license": "MIT",
   "type": "module",
-  "files": [
-    "src"
-  ],
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "lint": "tsc"
   },
   "exports": {
-    ".": {
-      "default": "./src/index.ts"
-    }
+    "types": "./dist/index.d.ts",
+    "default": "./dist/index.js"
   },
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@types/node": "^20.14.11",
+    "terser": "^5.31.3",
     "tsup": "^8.1.2",
     "type-fest": "^4.22.1",
     "typescript": "^5.5.3"

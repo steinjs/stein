@@ -1,6 +1,6 @@
 import { createServer, type ViteDevServer, PluginOption as VitePluginOption } from "vite";
-import solid from "vite-plugin-solid";
 import type { PartialDeep } from "type-fest";
+import solid from "vite-plugin-solid";
 import { defu } from "defu";
 
 export const startDevelopmentServer = async (cwd: string, config: SteinConfig): Promise<ViteDevServer> => {
@@ -76,4 +76,4 @@ export interface Plugin {
 }
 
 /** Helper to have types when making a new plugin. */
-export const definePlugin = <T>(plugin: (config?: PartialDeep<T>) => Plugin) => plugin;
+export const definePlugin = <T>(plugin: (config?: T) => Plugin) => plugin;

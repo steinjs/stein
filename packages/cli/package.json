@@ -1,17 +1,26 @@
 {
   "name": "@steinjs/cli",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.0.0",
+  "description": "CLI for SteinJS.",
   "license": "MIT",
   "type": "module",
-  "exports": "./src/index.ts",
-  "files": [
-    "src"
-  ],
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "lint": "tsc"
   },
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "default": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "bin": {
-    "stein": "./src/index.ts"
+    "stein": "./dist/index.js"
   },
   "devDependencies": {
     "@types/babel__core": "^7.20.5",

@@ -35,7 +35,7 @@ const defaultConfiguration: Config = {
   injectExtra: []
 };
 
-export default definePlugin<Config>((userConfiguration) => {
+export default definePlugin<Partial<Config>>((userConfiguration) => {
   const { injectEntry, injectReset, injectExtra } = defu(userConfiguration, defaultConfiguration);
   const injects = injectExtra;
   

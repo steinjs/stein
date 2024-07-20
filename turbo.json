@@ -1,0 +1,22 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["packages/**", "plugins/**", "!examples/**"],
+      "outputs": ["dist/**"]
+    },
+    "@steinjs/cli#build": {
+      "dependsOn": ["@steinjs/core#build"]
+    },
+    "stein-plugin-*#build": {
+      "dependsOn": ["@steinjs/core#build"]
+    },
+    "@steinjs/core#build": {
+      "outputs": ["dist/**"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    }
+  }
+}

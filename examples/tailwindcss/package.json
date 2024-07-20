@@ -1,16 +1,16 @@
 {
-  "name": "bare",
+  "name": "@examples/tailwindcss",
   "version": "1.0.0",
-  "description": "",
-  "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "stein dev"
+    "dev": "stein dev",
+    "lint": "tsc"
   },
   "devDependencies": {
     "@steinjs/cli": "workspace:*",
     "@steinjs/core": "workspace:*",
-    "stein-plugin-tailwindcss": "workspace:*"
+    "stein-plugin-tailwindcss": "workspace:*",
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "solid-js": "^1.8.18"

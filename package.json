@@ -1,8 +1,19 @@
 {
   "name": "@stein-js/monorepo",
+  "packageManager": "pnpm@9.4.0",
   "version": "0.0.0",
+  "scripts": {
+    "lint": "turbo lint",
+    "build": "turbo build",
+    "publish-all": "pnpm build && pnpm lint && changeset version && changeset publish"
+  },
   "workspaces": [
     "packages/*",
-    "plugins/*"
-  ]
+    "plugins/*",
+    "examples/*"
+  ],
+  "devDependencies": {
+    "@changesets/cli": "^2.27.7",
+    "turbo": "^2.0.9"
+  }
 }

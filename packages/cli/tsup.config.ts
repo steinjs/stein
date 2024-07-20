@@ -4,7 +4,7 @@ export default defineConfig({
   clean: true,
   entry: ["src/index.ts"],
   format: ["esm"],
-  minify: true,
+  minify: "terser",
   target: "esnext",
   outDir: "dist"
 });
