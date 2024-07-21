@@ -1,5 +1,4 @@
 import fs from "node:fs/promises";
-import path from "node:path";
 
 import { parseModule } from "meriyah"
 import { builders } from "estree-toolkit";
