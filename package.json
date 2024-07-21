@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "lint": "turbo lint",
-    "build": "turbo build",
-    "dev": "turbo run watch",
+    "build": "turbo build --filter=\"!@examples/*\"",
+    "dev": "turbo dev --filter=\"!@examples/*\"",
     "changeset": "changeset",
     "version-all": "changeset version",
     "publish-all": "pnpm build && pnpm lint && changeset publish"
