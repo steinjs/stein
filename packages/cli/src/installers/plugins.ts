@@ -9,8 +9,6 @@ import { updatePackageJSON } from "../utils/updatePackageJSON";
 
 // Officially supported plugins, defined in `/plugins/**` packages.
 const AVAILABLE_PLUGINS = ['unocss', 'tailwindcss'];
-// TODO: move this in another file since "plugins !== tools"
-// const availableToolIntegrations = ['biome', 'eslint', 'prettier'];
 
 /**
  * @description Installs a Stein plugin and adds it to the `stein.config.{ts,js,mjs,mts,cts}` file.
