@@ -1,5 +1,8 @@
 {
   "name": "stein-plugin-tailwindcss",
+  "publishConfig": {
+    "provenance": true
+  },
   "version": "0.0.2",
   "description": "Stein plugin for TailwindCSS.",
   "license": "MIT",

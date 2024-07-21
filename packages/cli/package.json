@@ -2,7 +2,8 @@
   "name": "@steinjs/cli",
   "private": false,
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "version": "0.0.3",
   "description": "CLI for SteinJS.",
