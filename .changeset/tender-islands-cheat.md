@@ -5,4 +5,5 @@
 "@steinjs/cli": patch
 ---
 
-add provenance
+- Add NPM provenance to all packages.
+- Use real version on CLI.

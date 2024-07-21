@@ -2,13 +2,14 @@
 import { Command } from 'commander';
 import { devModule } from './modules/dev';
 import { createModule } from './modules/create';
+import { version } from "../package.json";
 
 const program = new Command();
 
 program
   .name('stein')
   .description('CLI to run projects and scaffold a new stein project')
-  .version('0.1.0');
+  .version(version);
 
 program.command('dev')
   .description('start the stein development server')
