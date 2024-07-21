@@ -1,5 +1,11 @@
 # @steinjs/cli
 
+## 0.0.6
+
+### Patch Changes
+
+- 8e1cc38: Replace "Workspace:\*" to "latest" when cloning examples.
+
 ## 0.0.5
 
 ### Patch Changes
