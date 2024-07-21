@@ -107,15 +107,15 @@ export const installSteinPlugin = async (
         if (el.callee.type !== "Identifier") return false;
         return el.callee.name === pluginName;
       })
-    )
+    ) {
       throw new Error(
         `Plugin ${pluginName} is already added to the configuration.`,
       );
-    else {
-      // add the plugin to the array
-      // @ts-expect-error : no typed correctly within packages
-      pluginsProp.value.elements.push(pluginExpressionCall);
     }
+
+    // add the plugin to the array
+    // @ts-expect-error : no typed correctly within packages
+    pluginsProp.value.elements.push(pluginExpressionCall);
   }
 
   let output = generate(node);
