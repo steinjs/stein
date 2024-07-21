@@ -1,224 +1,234 @@
+import { spawnSync } from "node:child_process";
 import { promises as fs } from "node:fs"
 import path from "node:path";
 
 import {
-    intro,
-    outro,
-    confirm,
-    select,
-    spinner,
-    isCancel,
-    cancel,
-    text,
-    multiselect,
+  intro,
+  outro,
+  confirm,
+  select,
+  spinner,
+  isCancel,
+  cancel,
+  text
 } from '@clack/prompts';
+
 import * as clp from '@clack/prompts';
 import color from 'picocolors';
 
-// Fixes an issue with "tar" (used in "giget") on Windows when using Bun.
-// @ts-expect-error : see https://github.com/oven-sh/bun/issues/12696
-const needTarWorkaround = typeof Bun !== "undefined" && process.platform === "win32";
-if (needTarWorkaround) process.env.__FAKE_PLATFORM__ = "linux";
-const { downloadTemplate } = await import("giget");
-if (needTarWorkaround) delete process.env.__FAKE_PLATFORM__;
-
-import { installDependencies } from "nypm";
-import { spawn, spawnSync } from "node:child_process";
+import { installDependencies } from "../utils/installDependencies";
 import { installSteinPlugin } from "../installers/steinPluginInstaller";
+import { updatePackageJSON } from "../utils/updatePackageJSON";
 
-export const createModule = async (str: any, options: any) => {
-    // Logic for creating app
-    const bareTemplateLink = "github:steinjs/stein/examples/bare";
-
-    await setupWizard(bareTemplateLink);
+export const createModule = async (str: unknown, options: unknown): Promise<void> => {
+  const bareTemplateLink = "github:steinjs/stein/examples/bare";
+  await setupWizard(bareTemplateLink);
 }
 
-const setupWizard = async (templateLink: string) => {
-    intro(color.bgMagenta(" stein create "));
+const setupWizard = async (templateLink: string): Promise<void> => {
+  intro(color.bgMagenta(" stein create "));
 
-    const name = await text({
-        message: "What is the name of your project?",
-        placeholder: "my-stein-project",
-        defaultValue: "my-stein-project",
-    });
-    if (isCancel(name)) {
-        cancel("Operation cancelled");
-        return process.exit(0);
-    }
+  const name = await text({
+    message: "What is the name of your project?",
+    placeholder: "my-stein-project",
+    defaultValue: "my-stein-project",
+  });
 
-    const projectType = await select({
-        message: "Pick a project preset.",
+  if (isCancel(name)) {
+    cancel("Operation cancelled");
+    return process.exit(0);
+  }
+
+  const projectType = await select({
+    message: "Pick a project preset.",
+    options: [
+      { value: "minimal", label: "Minimal Starter" },
+      { value: "custom", label: "Custom" },
+      // TODO: Add custom presets here later.
+    ],
+  });
+
+  if (isCancel(projectType)) {
+    cancel("Operation cancelled");
+    return process.exit(0);
+  }
+
+  let plugins: string[] | undefined;
+  let tools: string[] | undefined;
+
+  if (projectType === "custom") {
+    // TODO: Generate these programmatically based on the plugins and tools available.
+    const group = await clp.group({
+      tools: () => clp.multiselect({
+          message: `What tools do you want to install? (Note: tools are not available yet)`,
+          options: [
+            { value: 'biome', label: 'Biome', hint: 'recommended'},
+            { value: 'eslint', label: 'ESLint' },
+            { value: 'prettier', label: 'Prettier' }
+          ],
+          required: false 
+        }),
+      plugins: () => clp.multiselect({
+        message: `What plugins do you want to add to your project?`,
         options: [
-            { value: "minimal", label: "Minimal Starter" },
-            { value: "custom", label: "Custom" },
-            // TODO: add custom presets here here later
+            { value: 'unocss', label: 'UnoCSS' },
+            { value: 'tailwindcss', label: 'TailwindCSS' }
         ],
-    });
-    if (isCancel(projectType)) {
-        cancel("Operation cancelled");
-        return process.exit(0);
-    }
-
-    const extraPackages: string[] = [];
-    if (projectType === "custom") {
-        const group = await clp.group(
-            {
-                // maybe generate these programmatically based on the integrations which are available (TODO)
-                tools: () =>
-                    clp.multiselect({
-                        message: `What tools do you want to install? (Note: tools are not available yet)`,
-                        options: [
-                            { value: 'biome', label: 'Biome', hint: 'recommended'},
-                            { value: 'eslint', label: 'ESLint' },
-                            { value: 'prettier', label: 'Prettier' }
-                        ],
-                        required: false 
-                    }),
-                plugins: () =>
-                    clp.multiselect({
-                        message: `What plugins do you want to add to your project?`,
-                        options: [
-                            { value: 'unocss', label: 'UnoCSS' },
-                            { value: 'tailwindcss', label: 'TailwindCSS' }
-                        ],
-                        required: false
-                    }),
-            },
-            {
-                onCancel: () => {
-                    clp.cancel('Operation cancelled.');
-                    process.exit(0);
-                },
-            }
-        );
-
-        if (group.tools && group.tools.length > 0 && Array.isArray(group.tools)) {
-            extraPackages.push(...group.tools as string[]);
-        }
-
-        if (group.plugins && group.plugins.length > 0 && Array.isArray(group.plugins)) {
-            extraPackages.push(...group.plugins as string[]);
-        }
-    }
-
-    const typeScriptEnabled = await confirm({
-        message: "Do you want to use TypeScript?",
-    });
-    if (isCancel(typeScriptEnabled)) {
-        cancel("Operation cancelled");
-        return process.exit(0);
-    }
-
-    const projectDir = await cloneTemplate(name, templateLink);
-    if (typeScriptEnabled) {
-        // delete stein.config.js inside the projectDir using the node fs module
-        await fs.unlink(path.join(projectDir, 'stein.config.js'));
-    }
-    else {
-        // delete tsconfig.json inside the projectDir using the node fs module
-        await fs.unlink(path.join(projectDir, 'tsconfig.json'));
-        await fs.unlink(path.join(projectDir, 'tsconfig.app.json'));
-        await fs.unlink(path.join(projectDir, 'tsconfig.node.json'));
-        await fs.unlink(path.join(projectDir, 'stein.config.ts'));
-    }
-
-    // go through all integrations if custom or any present is selected and install/configure them
-    if (extraPackages.length > 0) {
-        await installProjectIntegrations(projectDir, extraPackages);
-    }
-
-    const shouldInstallDependencies = await confirm({
-        message: "Do you want to install dependencies?",
+        required: false
+      }),
+    }, {
+      onCancel: () => {
+        clp.cancel('Operation cancelled.');
+        process.exit(0);
+      }
     });
 
-    if (isCancel(shouldInstallDependencies)) {
-        cancel('Operation cancelled');
-        return process.exit(0);
+    if (group.tools && group.tools.length > 0 && Array.isArray(group.tools)) {
+      tools = group.tools as string[];
     }
 
-    if (shouldInstallDependencies) {
-        await installProjectDependencies(projectDir);
+    if (group.plugins && group.plugins.length > 0 && Array.isArray(group.plugins)) {
+      plugins = group.plugins as string[];
     }
+  }
 
-    const shouldInitGitRepo = await confirm({
-        message: "Do you want to init a new Git repository?",
-    });
+  const typeScriptEnabled = await confirm({
+    message: "Do you want to use TypeScript?",
+  });
 
-    if (isCancel(shouldInitGitRepo)) {
-        cancel('Operation cancelled');
-        return process.exit(0);
-    }
+  if (isCancel(typeScriptEnabled)) {
+    cancel("Operation cancelled");
+    return process.exit(0);
+  }
 
-    if (shouldInitGitRepo) {
-        await initGitRepo(projectDir);
-    }
+  const projectDirectory = await cloneTemplate(name, templateLink);
+  await updatePackageJSON(projectDirectory, async (pkg) => {
+    pkg.name = name;
+  });
 
-    outro(`Stein project ${color.inverse(` ${name} `)} created successfully!`);
+  if (!typeScriptEnabled) {
+    // Remove TS related config files.
+    await fs.rm(path.join(projectDirectory, 'tsconfig.json'));
+    await fs.rm(path.join(projectDirectory, 'tsconfig.app.json'));
+    await fs.rm(path.join(projectDirectory, 'tsconfig.node.json'));
+
+    // Rename the stein.config file from ".ts" to ".js".
+    const oldConfigPath = path.join(projectDirectory, 'stein.config.ts');
+    const newConfigPath = path.join(projectDirectory, 'stein.config.js');
+    await fs.rename(oldConfigPath, newConfigPath);
+
+    // Rename the index file from ".tsx" to ".jsx".
+    const oldIndexPath = path.join(projectDirectory, 'src', "index.tsx");
+    const newIndexPath = path.join(projectDirectory, 'src', "index.jsx");
+    await fs.rename(oldIndexPath, newIndexPath);
+
+    // Remove the type.
+    const oldIndexContent = await fs.readFile(newIndexPath, 'utf-8');
+    const newIndexContent = oldIndexContent.replace(" as HTMLDivElement", '');
+    await fs.writeFile(newIndexPath, newIndexContent);
+  }
+
+  if (plugins) {
+    await installProjectPlugins(projectDirectory, plugins);
+  }
+
+  if (tools) {
+    // TODO
+  }
+
+  const shouldInstallDependencies = await confirm({
+    message: "Do you want to install dependencies?",
+  });
+
+  if (isCancel(shouldInstallDependencies)) {
+    cancel('Operation cancelled');
+    return process.exit(0);
+  }
+
+  if (shouldInstallDependencies) {
+    await installProjectDependencies(projectDirectory);
+  }
+
+  const shouldInitGitRepo = await confirm({
+    message: "Do you want to init a new Git repository?",
+  });
+
+  if (isCancel(shouldInitGitRepo)) {
+    cancel('Operation cancelled');
+    return process.exit(0);
+  }
+
+  if (shouldInitGitRepo) {
+    await initGitRepository(projectDirectory);
+  }
+
+  outro(`Stein project ${color.inverse(` ${name} `)} created successfully!`);
 }
 
 const cloneTemplate = async (projectName: string, templateLink: string): Promise<string> => {
-    const s = spinner();
-    s.start("Downloading template...");
-    const { dir } = await downloadTemplate(templateLink, {
-        force: true,
-        dir: projectName,
-    });
-    s.stop("Successfully downloaded template.");
+  const s = spinner();
+  s.start("Downloading template...");
 
-    return dir;
+  // Fixes an issue with "tar" (used in "giget") on Windows when using Bun.
+  // @ts-expect-error : see https://github.com/oven-sh/bun/issues/12696
+  const needTarWorkaround = typeof Bun !== "undefined" && process.platform === "win32";
+  if (needTarWorkaround) process.env.__FAKE_PLATFORM__ = "linux";
+  const { downloadTemplate } = await import("giget");
+  if (needTarWorkaround) delete process.env.__FAKE_PLATFORM__;
+  
+  const { dir } = await downloadTemplate(templateLink, {
+    force: true,
+    dir: projectName,
+  })
+
+  s.stop("Successfully downloaded template.");
+  return dir;
 }
 
-const installProjectDependencies = async (projectDir: string) => {
-    const s = spinner();
-    s.start('Installing dependencies...');
-    
-    // Install deps with users package manager (currently silent install, maybe change this)
-    try {
-        await installDependencies({
-            cwd: projectDir,
-            silent: true,
-        });
+const installProjectDependencies = async (projectDirectory: string): Promise<void> => {
+  const s = spinner();
+  s.start('Installing dependencies...');
+  
+  try {
+    await installDependencies(projectDirectory);
+    s.stop('Installed dependencies successfully.');
+  }
+  catch (error) {
+    console.error(error);
+    s.stop("Failed installing dependencies, skipping...");
+  }
+}
 
-        s.stop('Installed dependencies successfully.');
+const initGitRepository = async (projectDirectory: string): Promise<void> => {
+  const s = spinner();
+  s.start('Initializing git repository...');
+
+  try {
+    spawnSync('git', ['init'], { 
+      cwd: projectDirectory,
+      stdio: 'ignore'
+    });
+    
+    s.stop('Initialized git repository successfully.');
+  }
+  catch (error) {
+    console.error(error);
+    s.stop("Failed initializing git repository, skipping...");
+  }
+}
+
+const installProjectPlugins = async (projectDirectory: string, pluginNames: string[]): Promise<void> => {
+  const s = spinner();
+  s.start('Installing integrations...');
+
+  for (const pluginName of pluginNames) {
+    try {
+      await installSteinPlugin(pluginName, projectDirectory);
     }
     catch (err) {
-        console.error(err);
-        s.stop("Failed installing dependencies, skipping...");
+      console.error(err);
     }
+  }
 
-}
-
-const initGitRepo = async (projectDir: string) => {
-    const s = spinner();
-    s.start('Initializing git repository...');
-
-    try {
-        spawnSync('git', ['init'], { 
-            cwd: projectDir,
-            stdio: 'ignore'
-        });
-        s.stop('Initialized git repository successfully.');
-    } catch (error) {
-        console.error('Error initializing git repository:', error);
-        s.stop("Failed initializing git repository, skipping...");
-    }
-}
-
-const installProjectIntegrations = async (projectDir: string, extraPackages: string[]) => {
-    // Install integrations here
-    console.log(extraPackages);
-
-    const s = spinner();
-    s.start('Installing integrations...');
-
-    for (const pkg of extraPackages) {
-        try {
-            await installSteinPlugin(pkg, projectDir);
-        }
-        catch (err: any) {
-            console.error(err);
-        }
-    }
-
-    s.stop('Installed tools and integrations successfully.');
+  s.stop('Installed plugins successfully.');
 }
