@@ -65,7 +65,8 @@ const setupWizard = async (templateLink: string): Promise<void> => {
       {
         tools: () =>
           clp.multiselect({
-            message: `What tools do you want to install? (Note: tools are not available yet)`,
+            message:
+              "What tools do you want to install? (Note: tools are not available yet)",
             options: [
               { value: "biome", label: "Biome", hint: "recommended" },
               { value: "eslint", label: "ESLint" },
@@ -75,7 +76,7 @@ const setupWizard = async (templateLink: string): Promise<void> => {
           }),
         plugins: () =>
           clp.multiselect({
-            message: `What plugins do you want to add to your project?`,
+            message: "What plugins do you want to add to your project?",
             options: [
               { value: "unocss", label: "UnoCSS" },
               { value: "tailwindcss", label: "TailwindCSS" },
