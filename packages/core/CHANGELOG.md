@@ -1,5 +1,11 @@
 # @steinjs/core
 
+## 0.0.3
+
+### Patch Changes
+
+- a7d7bcf: Add NPM provenance to all packages.
+
 ## 0.0.2
 
 ### Patch Changes

@@ -3,7 +3,7 @@
   "publishConfig": {
     "provenance": true
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Stein plugin for UnoCSS.",
   "license": "MIT",
   "type": "module",
