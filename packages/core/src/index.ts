@@ -1,9 +1,18 @@
-import { createServer, type ViteDevServer, PluginOption as VitePluginOption } from "vite";
+import {
+  type ViteDevServer,
+  type PluginOption as VitePluginOption,
+  type InlineConfig as ViteConfig,
+
+  createServer as createViteServer,
+  build as createViteBuild,
+} from "vite";
+
 import type { PartialDeep } from "type-fest";
-import solid from "vite-plugin-solid";
 import { defu } from "defu";
 
-export const startDevelopmentServer = async (cwd: string, config: SteinConfig): Promise<ViteDevServer> => {
+import solid from "vite-plugin-solid";
+
+const convertToViteConfig = (cwd: string, config: SteinConfig): ViteConfig => {
   let solidIndex = 0;
   const plugins: VitePluginOption = [solid()];
 
@@ -25,19 +34,27 @@ export const startDevelopmentServer = async (cwd: string, config: SteinConfig): 
 
     if (plugin.vite) plugins.push(plugin.vite);
   }
-  
-  const server = await createServer({
+
+  return {
     configFile: false,
     plugins,
     
     root: cwd,
     server: { port: config.development.port, strictPort: true },
     clearScreen: false
-  });
+  }
+}
+
+export const dev = async (cwd: string, config: SteinConfig): Promise<ViteDevServer> => {
+  const server = await createViteServer(convertToViteConfig(cwd, config));
   
   await server.listen();
   return server;
 };
+
+export const build = async (cwd: string, config: SteinConfig): Promise<void> => {
+  await createViteBuild(convertToViteConfig(cwd, config))
+}
 
 export interface SteinConfig {
   /**
