@@ -1,5 +1,14 @@
 # stein-plugin-unocss
 
+## 0.0.4
+
+### Patch Changes
+
+- e098459: Injected script should be before </head>, not after.
+- 2254b3b: Transform HTML before plugins hooks (support for virtual module resolution in build)
+- Updated dependencies [46aa239]
+  - @steinjs/core@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

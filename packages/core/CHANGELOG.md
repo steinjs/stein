@@ -1,5 +1,11 @@
 # @steinjs/core
 
+## 0.0.4
+
+### Patch Changes
+
+- 46aa239: Add build command
+
 ## 0.0.3
 
 ### Patch Changes
