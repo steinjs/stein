@@ -69,7 +69,7 @@ export default definePlugin<Partial<Config>>((userConfiguration) => {
       },
       
       transformIndexHtml (html) {
-        const endHead = html.indexOf("</head>") + "</head>".length;
+        const endHead = html.indexOf("</head>");
         return html.slice(0, endHead) + `<script src="${UNO_INJECT_ID}" type="module"></script>` + html.slice(endHead);
       }
     }
