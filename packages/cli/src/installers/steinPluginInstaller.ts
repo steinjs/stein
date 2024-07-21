@@ -1,128 +1,137 @@
-import fs from "node:fs/promises"
+import fs from "node:fs/promises";
 import path from "node:path";
 
-import { addDependency } from "nypm";
+import { parseModule } from "meriyah"
+import { builders } from "estree-toolkit";
+import { generate } from "astring";
 
-import * as babel from "@babel/core";
-import { traverse } from "@babel/core";
-import * as t from '@babel/types';
-import generate from "@babel/generator";
+import { findConfigFile } from "../utils/findConfigFile";
+import { updatePackageJSON } from "../utils/updatePackageJSON";
 
-const availableSteinPlugins = ['unocss', 'tailwindcss'];
-const availableToolIntegrations = ['biome', 'eslint', 'prettier'];
+// Officially supported plugins, defined in `/plugins/**` packages.
+const AVAILABLE_PLUGINS = ['unocss', 'tailwindcss'];
+// TODO: move this in another file since "plugins !== tools"
+// const availableToolIntegrations = ['biome', 'eslint', 'prettier'];
 
 /**
- * @description Installs a stein plugin and adds it to the stein.config.ts file
- * @param pkgName The name of the plugin to install
+ * @description Installs a Stein plugin and adds it to the `stein.config.{ts,js,mjs,mts,cts}` file.
+ * @param pluginName The name of the plugin to install (will be translated to `stein-plugin-<pluginName>`)
  * @param projectDir The directory of the project
  */
-export const installSteinPlugin = async (pkgName: string, projectDir: string) => {
-    if (!availableSteinPlugins.includes(pkgName)) {
-        installToolIntegration(pkgName);
+export const installSteinPlugin = async (pluginName: string, projectDir: string) => {
+  if (!AVAILABLE_PLUGINS.includes(pluginName)) {
+    throw new Error("not a valid stein plugin");
+  }
+
+  const configFile = await findConfigFile(projectDir);
+  if (!configFile) throw new Error("couldn't find a stein.config file in the project directory");
+
+  const originalCode = await fs.readFile(configFile, "utf-8");
+  const node = parseModule(originalCode);
+
+  const importNodes = node.body.filter(n => n.type === "ImportDeclaration");
+  const pluginImportNodes = importNodes.filter(n => n.source.value === `stein-plugin-${pluginName}`);
+  const lastImportIndex = importNodes.findIndex(n => n === pluginImportNodes[pluginImportNodes.length - 1]);
+  
+  if (pluginImportNodes.length === 0) {
+    // Insert the import statement at the top of the file
+    const declaration = builders.importDeclaration(
+      [builders.importDefaultSpecifier(builders.identifier(pluginName))],
+      builders.literal(`stein-plugin-${pluginName}`)
+    );
+
+    // insert after lastImportIndex
+    // @ts-expect-error : no typed correctly within packages
+    node.body.splice(lastImportIndex + 1, 0, declaration);
+  }
+
+  const exportDefaultNode = node.body.find(n => n.type === "ExportDefaultDeclaration");
+  if (!exportDefaultNode) throw new Error("export default not found");
+
+  // Ensure `defineConfig()` is used.
+  if ( exportDefaultNode.declaration.type !== "CallExpression"
+    || exportDefaultNode.declaration.callee.type !== "Identifier"
+    || exportDefaultNode.declaration.callee.name !== "defineConfig"
+  ) throw new Error("defineConfig() not found");
+
+  const configNode = exportDefaultNode.declaration.arguments[0];
+  if (configNode.type !== "ObjectExpression") throw new Error("no argument given to defineConfig()");
+
+  const pluginsProp = configNode.properties.find((prop) => {
+    if (prop.type !== 'Property') return false;
+    if (prop.key.type === 'Identifier') {
+      if (prop.key.name === 'plugins') return true;
     }
 
-    // Find stein.config.ts or stein.config.js file and return the full path by searching what file exists inside projectDir
-    const tsConfigExists = await fs.access(
-        path.join(projectDir, "stein.config.ts"), fs.constants.F_OK
-    ).then(() => true).catch(() => false);
+    return false;
+  });
 
-    const jsConfigExists = await fs.access(
-        path.join(projectDir, "stein.config.js"), fs.constants.F_OK
-    ).then(() => true).catch(() => false);
+  const pluginExpressionCall = builders.callExpression(builders.identifier(pluginName), getPluginArguments(pluginName))
 
-    const configFile = tsConfigExists ? path.join(projectDir, "stein.config.ts") : jsConfigExists ? path.join(projectDir, "stein.config.js") : undefined;
-
-    if (!configFile) {
-        throw new Error(`Could not find a stein config file in ${projectDir}`);
-    }
-
-    const configCode = await fs.readFile(configFile, "utf-8");
-    const ast = babel.parse(configCode, {
-        sourceType: 'module',
-        plugins: ['@babel/plugin-syntax-typescript'],
-    });
-
-    if (!ast) {
-        throw new Error(`Could not parse the stein config file at ${configFile}`);
-    }
-
-    traverse(ast, {
-        Program(path) {
-            // Add the import statement for the plugin
-            const importLines = path.node.body.filter(
-                (node): node is t.ImportDeclaration =>
-                    t.isImportDeclaration(node) 
-            );
-
-            const importDeclaration = t.importDeclaration(
-                [t.importDefaultSpecifier(t.identifier(pkgName))],
-                t.stringLiteral(`stein-plugin-${pkgName}`)
-            );
-
-            path.node.body.splice(importLines.length, 0, importDeclaration);
-        },
-        ObjectExpression(path) {
-            // Find the plugins array
-            const pluginsProperty = path.node.properties.find(
-                (prop): prop is t.ObjectProperty => 
-                    t.isObjectProperty(prop) && t.isIdentifier(prop.key, { name: 'plugins' })
-            );    
-
-            if (pluginsProperty && t.isArrayExpression(pluginsProperty.value)) {
-                // Create the new plugin node
-                const newPlugin = t.callExpression(
-                    t.identifier(pkgName),
-                    getPluginArguments(pkgName)
-                );
-        
-                pluginsProperty.value.elements.push(newPlugin);
-            }
-        },
-    });
+  if (!pluginsProp) { // no plugins property, let's add one
+    // @ts-expect-error : no typed correctly within packages
+    configNode.properties.push(builders.property(
+      "init",
+      builders.identifier('plugins'),
+      builders.arrayExpression([pluginExpressionCall])
+    ));
+  }
+  else { // check it's an array
+    if (pluginsProp.type !== "Property") throw new Error("plugins property is not a property");
+    if (pluginsProp.value.type !== 'ArrayExpression') throw new Error("plugins property is not an array");
+  
+    // check if the plugin is already added
+    if (pluginsProp.value.elements.find((el) => {
+      if (!el || el.type !== 'CallExpression') return false;
+      if (el.callee.type !== 'Identifier') return false;
+      return el.callee.name === pluginName;
+    })) throw new Error(`Plugin ${pluginName} is already added to the configuration.`);
     
-    const { code: updatedCode } = generate(ast);
-
-    // Insert an empty line between the last import and the configuration for cosmetic reasons
-    const lines = updatedCode.split('\n');
-    const lastImportIndex = lines.findIndex(line => line.startsWith('import ') && !lines[lines.indexOf(line) + 1].startsWith('import '));
-    if (lastImportIndex !== -1) {
-        lines.splice(lastImportIndex + 1, 0, ''); // Add an empty line after the last import
+    else { // add the plugin to the array
+      // @ts-expect-error : no typed correctly within packages
+      pluginsProp.value.elements.push(pluginExpressionCall);
     }
-    const finalCode = lines.join('\n');
-    
-    await fs.writeFile(configFile, finalCode, 'utf-8');
+  }
 
-    // After adding the plugin to the config, add the package to the dependencies
-    await addDependency(`stein-plugin-${pkgName}`,{
-        cwd: projectDir,
-        dev: true
-    });
-    
-    if (pkgName === "unocss") {
-        // Add the UnoCSS reset as a dependency
-        await addDependency("@unocss/reset", {
-            cwd: projectDir,
-            dev: true
-        });
+  let output = generate(node);
+
+  const comment = '// See the documentation for more details.';
+	const defaultExport = 'export default defineConfig';
+	output = output.replace(`\n${comment}`, '');
+	output = output.replace(`${defaultExport}`, `\n${comment}\n${defaultExport}`);
+  await fs.writeFile(configFile, output, 'utf-8');
+
+  await updatePackageJSON(projectDir, async (pkg) => {
+    pkg.devDependencies[`stein-plugin-${pluginName}`] = "latest";
+
+    const dependencies = getPluginDependencies(pluginName);
+    for (const dep of dependencies) {
+      const key = dep.dev ? "devDependencies" : "dependencies";
+      pkg[key][dep.name] = "latest";
     }
-
-    console.log(`Added plugin ${pkgName} to the stein config file at ${configFile} successfully.`);
+  })
 }
 
-const getPluginArguments = (pkgName: string) => {
-    if (pkgName === 'unocss') {
-        // Add reset as a default for UnoCSS
-        return [t.objectExpression([t.objectProperty(t.identifier('injectReset'), t.booleanLiteral(true))])];
-    }
-    else {
-        return [];
-    }
-}
+const getPluginArguments = (pluginName: string) => {
+  if (pluginName === 'unocss') {
+    return [
+      builders.objectExpression([
+        // Add "injectReset: true" as default.
+        builders.property(
+          "init",
+          builders.identifier('injectReset'),
+          builders.identifier("true")
+        )])
+      ];
+  }
 
-const installToolIntegration = async (pkgName: string) => {
-    if (!availableToolIntegrations.includes(pkgName)) {
-        throw new Error(`Tool integration ${pkgName} is not a valid Stein plugin or tool integration.`);
-    }
+  return [];
+};
 
-    // Install the tool integration
-}
+export const getPluginDependencies = (pluginName: string): Array<{ name: string, dev: boolean }> => {
+  if (pluginName === 'unocss') {
+    return [{ name: "@unocss/reset", dev: false }];
+  }
+
+  return [];
+};
