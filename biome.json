@@ -12,5 +12,13 @@
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "space"
-	}
+	},
+	"overrides": [
+		{
+			"include": ["examples/**"],
+			"formatter": {
+				"enabled": false
+			}
+		}
+	]
 }
