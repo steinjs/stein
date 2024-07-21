@@ -7,7 +7,11 @@
   },
   "version": "0.0.4",
   "description": "CLI for SteinJS.",
-  "repository": "github:steinjs/stein/packages/cli",
+  "repository": {
+    "directory": "packages/cli",
+    "url": "https://github.com/steinjs/stein",
+    "type": "git"
+  },
   "license": "MIT",
   "type": "module",
   "scripts": {

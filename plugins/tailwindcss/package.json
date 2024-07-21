@@ -5,7 +5,11 @@
   },
   "version": "0.0.3",
   "description": "Stein plugin for TailwindCSS.",
-  "repository": "github:steinjs/stein/plugins/tailwindcss",
+  "repository": {
+    "directory": "plugins/tailwindcss",
+    "url": "https://github.com/steinjs/stein",
+    "type": "git"
+  },
   "license": "MIT",
   "type": "module",
   "scripts": {
