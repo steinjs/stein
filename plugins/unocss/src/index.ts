@@ -75,6 +75,7 @@ export default definePlugin<Partial<Config>>((userConfiguration) => {
         handler: (html) => {
           const endHead = html.indexOf("</head>");
           return (
+            // biome-ignore lint: better readability
             html.slice(0, endHead) +
             `<script src="${UNO_INJECT_ID}" type="module"></script>` +
             html.slice(endHead)
