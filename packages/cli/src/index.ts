@@ -12,14 +12,10 @@ program
 
 program.command('dev')
   .description('start the stein development server')
-  .action(async (str, options) => {
-    await devModule(str, options);
-});
+  .action(devModule);
 
 program.command('create')
   .description('scaffold a new stein project')
-  .action(async (str, options) => {
-    await createModule(str, options)
-});
+  .action(createModule);
 
 program.parse();
