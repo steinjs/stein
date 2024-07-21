@@ -1,11 +1,12 @@
-import { startDevelopmentServer, type SteinConfig } from "@steinjs/core";
+import { dev, type SteinConfig } from "@steinjs/core";
 import type { Command } from "commander";
 import { watchConfig } from "c12";
 
 export const devModule = async (options: unknown, command: Command) => {
   console.clear();
+  
   const cwd = process.cwd();
-  let server: Awaited<ReturnType<typeof startDevelopmentServer>> | undefined;
+  let server: Awaited<ReturnType<typeof dev>> | undefined;
   
   const { config } = await watchConfig<SteinConfig>({
     cwd,
@@ -17,14 +18,14 @@ export const devModule = async (options: unknown, command: Command) => {
         server.httpServer?.close();
 
         console.clear();
-        server = await startDevelopmentServer(cwd, config);
+        server = await dev(cwd, config);
         server.printUrls()
         server.bindCLIShortcuts({ print: true })
       }
     }
   });
 
-  server = await startDevelopmentServer(cwd, config);
+  server = await dev(cwd, config);
   server.printUrls()
   server.bindCLIShortcuts({ print: true })
 }

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { devModule } from './modules/dev';
 import { createModule } from './modules/create';
+import { devModule } from './modules/dev';
+import { buildModule } from './modules/build';
 import { version } from "../package.json";
 
 const program = new Command();
@@ -14,6 +15,10 @@ program
 program.command('dev')
   .description('start the stein development server')
   .action(devModule);
+
+program.command('build')
+  .description('make a stein production build')
+  .action(buildModule);
 
 program.command('create')
   .description('scaffold a new stein project')
