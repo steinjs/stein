@@ -1,5 +1,14 @@
 # @steinjs/cli
 
+## 0.0.4
+
+### Patch Changes
+
+- a7d7bcf: Add NPM provenance to all packages.
+- d8c3803: Display real version and use `shell: true` when installing dependencies for better compatibility on Windows.
+- Updated dependencies [a7d7bcf]
+  - @steinjs/core@0.0.3
+
 ## 0.0.3
 
 ### Patch Changes
