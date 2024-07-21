@@ -197,11 +197,14 @@ const cloneTemplate = async (
   s.start("Downloading template...");
 
   // Fixes an issue with "tar" (used in "giget") on Windows when using Bun.
-  // @ts-expect-error : see https://github.com/oven-sh/bun/issues/12696
   const needTarWorkaround =
+    // @ts-expect-error : see https://github.com/oven-sh/bun/issues/12696
     typeof Bun !== "undefined" && process.platform === "win32";
   if (needTarWorkaround) process.env.__FAKE_PLATFORM__ = "linux";
+
   const { downloadTemplate } = await import("giget");
+
+  // biome-ignore lint/performance/noDelete: required for what we are doing here
   if (needTarWorkaround) delete process.env.__FAKE_PLATFORM__;
 
   const { dir } = await downloadTemplate(templateLink, {
