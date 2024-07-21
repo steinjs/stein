@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "stein dev",
+    "build": "stein build",
     "lint": "tsc"
   },
   "devDependencies": {

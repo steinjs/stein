@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "stein dev",
+    "build": "stein build",
     "lint": "tsc"
   },
   "devDependencies": {
-    "@steinjs/cli": "latest",
-    "@steinjs/core": "latest",
+    "@steinjs/cli": "workspace:*",
+    "@steinjs/core": "workspace:*",
     "typescript": "^5.5.3"
   },
   "dependencies": {
