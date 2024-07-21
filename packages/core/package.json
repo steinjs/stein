@@ -7,6 +7,7 @@
   },
   "version": "0.0.3",
   "description": "Core of SteinJS.",
+  "repository": "github:steinjs/stein/packages/core",
   "license": "MIT",
   "type": "module",
   "scripts": {
