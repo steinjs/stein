@@ -1,5 +1,11 @@
 # @steinjs/cli
 
+## 0.0.3
+
+### Patch Changes
+
+- 488060c: Support for Bun on Windows and better "create" command
+
 ## 0.0.2
 
 ### Patch Changes
