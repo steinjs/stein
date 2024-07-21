@@ -1,29 +1,32 @@
 import { spawnSync } from "node:child_process";
-import { promises as fs } from "node:fs"
+import { promises as fs } from "node:fs";
 import path from "node:path";
 
 import {
-  intro,
-  outro,
+  cancel,
   confirm,
+  intro,
+  isCancel,
+  outro,
   select,
   spinner,
-  isCancel,
-  cancel,
-  text
-} from '@clack/prompts';
+  text,
+} from "@clack/prompts";
 
-import * as clp from '@clack/prompts';
-import color from 'picocolors';
+import * as clp from "@clack/prompts";
+import color from "picocolors";
 
-import { installDependencies } from "../utils/installDependencies";
 import { installSteinPlugin } from "../installers/plugins";
+import { installDependencies } from "../utils/installDependencies";
 import { updatePackageJSON } from "../utils/updatePackageJSON";
 
-export const createModule = async (str: unknown, options: unknown): Promise<void> => {
+export const createModule = async (
+  str: unknown,
+  options: unknown,
+): Promise<void> => {
   const bareTemplateLink = "github:steinjs/stein/examples/bare";
   await setupWizard(bareTemplateLink);
-}
+};
 
 const setupWizard = async (templateLink: string): Promise<void> => {
   intro(color.bgMagenta(" stein create "));
@@ -58,36 +61,45 @@ const setupWizard = async (templateLink: string): Promise<void> => {
 
   if (projectType === "custom") {
     // TODO: Generate these programmatically based on the plugins and tools available.
-    const group = await clp.group({
-      tools: () => clp.multiselect({
-          message: `What tools do you want to install? (Note: tools are not available yet)`,
-          options: [
-            { value: 'biome', label: 'Biome', hint: 'recommended'},
-            { value: 'eslint', label: 'ESLint' },
-            { value: 'prettier', label: 'Prettier' }
-          ],
-          required: false 
-        }),
-      plugins: () => clp.multiselect({
-        message: `What plugins do you want to add to your project?`,
-        options: [
-            { value: 'unocss', label: 'UnoCSS' },
-            { value: 'tailwindcss', label: 'TailwindCSS' }
-        ],
-        required: false
-      }),
-    }, {
-      onCancel: () => {
-        clp.cancel('Operation cancelled.');
-        process.exit(0);
-      }
-    });
+    const group = await clp.group(
+      {
+        tools: () =>
+          clp.multiselect({
+            message: `What tools do you want to install? (Note: tools are not available yet)`,
+            options: [
+              { value: "biome", label: "Biome", hint: "recommended" },
+              { value: "eslint", label: "ESLint" },
+              { value: "prettier", label: "Prettier" },
+            ],
+            required: false,
+          }),
+        plugins: () =>
+          clp.multiselect({
+            message: `What plugins do you want to add to your project?`,
+            options: [
+              { value: "unocss", label: "UnoCSS" },
+              { value: "tailwindcss", label: "TailwindCSS" },
+            ],
+            required: false,
+          }),
+      },
+      {
+        onCancel: () => {
+          clp.cancel("Operation cancelled.");
+          process.exit(0);
+        },
+      },
+    );
 
     if (group.tools && group.tools.length > 0 && Array.isArray(group.tools)) {
       tools = group.tools as string[];
     }
 
-    if (group.plugins && group.plugins.length > 0 && Array.isArray(group.plugins)) {
+    if (
+      group.plugins &&
+      group.plugins.length > 0 &&
+      Array.isArray(group.plugins)
+    ) {
       plugins = group.plugins as string[];
     }
   }
@@ -105,9 +117,9 @@ const setupWizard = async (templateLink: string): Promise<void> => {
   await updatePackageJSON(projectDirectory, async (pkg) => {
     pkg.name = name;
 
-    for (const key of ['devDependencies', 'dependencies']) {
+    for (const key of ["devDependencies", "dependencies"]) {
       if (!pkg[key]) continue;
-      
+
       // Replace all "workspace:*" to "latest".
       for (const [packageName, version] of Object.entries(pkg[key])) {
         if (version === "workspace:*") {
@@ -119,23 +131,23 @@ const setupWizard = async (templateLink: string): Promise<void> => {
 
   if (!typeScriptEnabled) {
     // Remove TS related config files.
-    await fs.rm(path.join(projectDirectory, 'tsconfig.json'));
-    await fs.rm(path.join(projectDirectory, 'tsconfig.app.json'));
-    await fs.rm(path.join(projectDirectory, 'tsconfig.node.json'));
+    await fs.rm(path.join(projectDirectory, "tsconfig.json"));
+    await fs.rm(path.join(projectDirectory, "tsconfig.app.json"));
+    await fs.rm(path.join(projectDirectory, "tsconfig.node.json"));
 
     // Rename the stein.config file from ".ts" to ".js".
-    const oldConfigPath = path.join(projectDirectory, 'stein.config.ts');
-    const newConfigPath = path.join(projectDirectory, 'stein.config.js');
+    const oldConfigPath = path.join(projectDirectory, "stein.config.ts");
+    const newConfigPath = path.join(projectDirectory, "stein.config.js");
     await fs.rename(oldConfigPath, newConfigPath);
 
     // Rename the index file from ".tsx" to ".jsx".
-    const oldIndexPath = path.join(projectDirectory, 'src', "index.tsx");
-    const newIndexPath = path.join(projectDirectory, 'src', "index.jsx");
+    const oldIndexPath = path.join(projectDirectory, "src", "index.tsx");
+    const newIndexPath = path.join(projectDirectory, "src", "index.jsx");
     await fs.rename(oldIndexPath, newIndexPath);
 
     // Remove the type.
-    const oldIndexContent = await fs.readFile(newIndexPath, 'utf-8');
-    const newIndexContent = oldIndexContent.replace(" as HTMLDivElement", '');
+    const oldIndexContent = await fs.readFile(newIndexPath, "utf-8");
+    const newIndexContent = oldIndexContent.replace(" as HTMLDivElement", "");
     await fs.writeFile(newIndexPath, newIndexContent);
   }
 
@@ -152,7 +164,7 @@ const setupWizard = async (templateLink: string): Promise<void> => {
   });
 
   if (isCancel(shouldInstallDependencies)) {
-    cancel('Operation cancelled');
+    cancel("Operation cancelled");
     return process.exit(0);
   }
 
@@ -165,7 +177,7 @@ const setupWizard = async (templateLink: string): Promise<void> => {
   });
 
   if (isCancel(shouldInitGitRepo)) {
-    cancel('Operation cancelled');
+    cancel("Operation cancelled");
     return process.exit(0);
   }
 
@@ -174,72 +186,78 @@ const setupWizard = async (templateLink: string): Promise<void> => {
   }
 
   outro(`Stein project ${color.inverse(` ${name} `)} created successfully!`);
-}
+};
 
-const cloneTemplate = async (projectName: string, templateLink: string): Promise<string> => {
+const cloneTemplate = async (
+  projectName: string,
+  templateLink: string,
+): Promise<string> => {
   const s = spinner();
   s.start("Downloading template...");
 
   // Fixes an issue with "tar" (used in "giget") on Windows when using Bun.
   // @ts-expect-error : see https://github.com/oven-sh/bun/issues/12696
-  const needTarWorkaround = typeof Bun !== "undefined" && process.platform === "win32";
+  const needTarWorkaround =
+    typeof Bun !== "undefined" && process.platform === "win32";
   if (needTarWorkaround) process.env.__FAKE_PLATFORM__ = "linux";
   const { downloadTemplate } = await import("giget");
   if (needTarWorkaround) delete process.env.__FAKE_PLATFORM__;
-  
+
   const { dir } = await downloadTemplate(templateLink, {
     force: true,
     dir: projectName,
-  })
+  });
 
   s.stop("Successfully downloaded template.");
   return dir;
-}
+};
 
-const installProjectDependencies = async (projectDirectory: string): Promise<void> => {
+const installProjectDependencies = async (
+  projectDirectory: string,
+): Promise<void> => {
   const s = spinner();
-  s.start('Installing dependencies...');
-  
+  s.start("Installing dependencies...");
+
   try {
     await installDependencies(projectDirectory);
-    s.stop('Installed dependencies successfully.');
-  }
-  catch (error) {
+    s.stop("Installed dependencies successfully.");
+  } catch (error) {
     console.error(error);
     s.stop("Failed installing dependencies, skipping...");
   }
-}
+};
 
 const initGitRepository = async (projectDirectory: string): Promise<void> => {
   const s = spinner();
-  s.start('Initializing git repository...');
+  s.start("Initializing git repository...");
 
   try {
-    spawnSync('git', ['init'], { 
+    spawnSync("git", ["init"], {
       cwd: projectDirectory,
-      stdio: 'ignore'
+      stdio: "ignore",
     });
-    
-    s.stop('Initialized git repository successfully.');
-  }
-  catch (error) {
+
+    s.stop("Initialized git repository successfully.");
+  } catch (error) {
     console.error(error);
     s.stop("Failed initializing git repository, skipping...");
   }
-}
+};
 
-const installProjectPlugins = async (projectDirectory: string, pluginNames: string[]): Promise<void> => {
+const installProjectPlugins = async (
+  projectDirectory: string,
+  pluginNames: string[],
+): Promise<void> => {
   const s = spinner();
-  s.start('Installing integrations...');
+  s.start("Installing integrations...");
 
   for (const pluginName of pluginNames) {
     try {
       await installSteinPlugin(pluginName, projectDirectory);
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
     }
   }
 
-  s.stop('Installed plugins successfully.');
-}
+  s.stop("Installed plugins successfully.");
+};

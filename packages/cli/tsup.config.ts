@@ -6,5 +6,5 @@ export default defineConfig({
   format: ["esm"],
   minify: "terser",
   target: "esnext",
-  outDir: "dist"
+  outDir: "dist",
 });

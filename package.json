@@ -1,19 +1,19 @@
 {
-	"name": "@stein-js/monorepo",
-	"packageManager": "pnpm@9.4.0",
-	"version": "0.0.0",
-	"scripts": {
-		"lint": "turbo lint",
-		"build": "turbo build --filter=\"!@examples/*\"",
-		"dev": "turbo dev --filter=\"!@examples/*\"",
-		"changeset": "changeset",
-		"version-all": "changeset version",
-		"publish-all": "pnpm build && pnpm lint && changeset publish"
-	},
-	"workspaces": ["packages/*", "plugins/*", "examples/*"],
-	"devDependencies": {
-		"@biomejs/biome": "1.8.3",
-		"@changesets/cli": "^2.27.7",
-		"turbo": "^2.0.9"
-	}
+  "name": "@stein-js/monorepo",
+  "packageManager": "pnpm@9.4.0",
+  "version": "0.0.0",
+  "scripts": {
+    "lint": "turbo lint",
+    "build": "turbo build --filter=\"!@examples/*\"",
+    "dev": "turbo dev --filter=\"!@examples/*\"",
+    "changeset": "changeset",
+    "version-all": "changeset version",
+    "publish-all": "pnpm build && pnpm lint && changeset publish"
+  },
+  "workspaces": ["packages/*", "plugins/*", "examples/*"],
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@changesets/cli": "^2.27.7",
+    "turbo": "^2.0.9"
+  }
 }

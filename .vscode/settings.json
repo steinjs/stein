@@ -3,5 +3,5 @@
     "MD041": false
   },
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "biomejs.biome",
+  "editor.defaultFormatter": "biomejs.biome"
 }

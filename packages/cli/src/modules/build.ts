@@ -1,6 +1,6 @@
-import { build, type SteinConfig } from "@steinjs/core";
-import type { Command } from "commander";
+import { type SteinConfig, build } from "@steinjs/core";
 import { loadConfig } from "c12";
+import type { Command } from "commander";
 
 export const buildModule = async (options: unknown, command: Command) => {
   console.clear();
@@ -13,4 +13,4 @@ export const buildModule = async (options: unknown, command: Command) => {
   });
 
   await build(cwd, config);
-}
+};

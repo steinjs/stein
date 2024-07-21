@@ -1,20 +1,22 @@
 import { spawn } from "node:child_process";
 import { detectPackageManager } from "nypm";
 
-export const installDependencies = async (projectDirectory: string): Promise<void> => {
-  const packageManager = await detectPackageManager(projectDirectory)
-  let command = packageManager?.command ?? "npm";
-  
+export const installDependencies = async (
+  projectDirectory: string,
+): Promise<void> => {
+  const packageManager = await detectPackageManager(projectDirectory);
+  const command = packageManager?.command ?? "npm";
+
   return new Promise((resolve, reject) => {
-    const child = spawn(command, ['install'], { 
+    const child = spawn(command, ["install"], {
       cwd: projectDirectory,
       stdio: "ignore",
-      shell: true
+      shell: true,
     });
 
-    child.on('exit', (code) => {
+    child.on("exit", (code) => {
       if (code === 0) resolve();
       else reject();
     });
   });
-}
+};

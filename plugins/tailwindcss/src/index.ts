@@ -1,12 +1,10 @@
-import { definePlugin, type Plugin } from "@steinjs/core";
+import { type Plugin, definePlugin } from "@steinjs/core";
 import autoprefixer from "autoprefixer";
 import tailwindcss from "tailwindcss";
 
 const TW_INJECT_ID = "__stein@tailwindcss.css";
 
-interface Config {
-  // TODO
-}
+type Config = {};
 
 export default definePlugin<Config>(() => {
   return {
@@ -14,18 +12,17 @@ export default definePlugin<Config>(() => {
     vite: {
       name: "stein:tailwindcss",
       enforce: "pre",
-      
-      resolveId (id) {
-        if (id === TW_INJECT_ID)
-          return id;
+
+      resolveId(id) {
+        if (id === TW_INJECT_ID) return id;
       },
 
-      load (id) {
+      load(id) {
         if (id.endsWith(TW_INJECT_ID)) {
           return [
             "@tailwind base;",
             "@tailwind components;",
-            "@tailwind utilities;"
+            "@tailwind utilities;",
           ].join("\n");
         }
       },
@@ -37,23 +34,24 @@ export default definePlugin<Config>(() => {
             plugins: [
               autoprefixer(),
               tailwindcss({
-                content: [
-                  "./index.html",
-                  "./src/**/*.{js,ts,jsx,tsx}",
-                ]
-              })
-            ]
-          }
-        }
+                content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+              }),
+            ],
+          },
+        },
       }),
 
       transformIndexHtml: {
         order: "pre",
         handler: (html) => {
-            const endHead = html.indexOf("</head>");
-            return html.slice(0, endHead) + `<script src="${TW_INJECT_ID}" type="module"></script>` + html.slice(endHead);
-          }
-      }
-    }
+          const endHead = html.indexOf("</head>");
+          return (
+            html.slice(0, endHead) +
+            `<script src="${TW_INJECT_ID}" type="module"></script>` +
+            html.slice(endHead)
+          );
+        },
+      },
+    },
   } satisfies Plugin;
-})
+});

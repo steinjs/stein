@@ -1,14 +1,13 @@
 import {
+  type InlineConfig as ViteConfig,
   type ViteDevServer,
   type PluginOption as VitePluginOption,
-  type InlineConfig as ViteConfig,
-
-  createServer as createViteServer,
   build as createViteBuild,
+  createServer as createViteServer,
 } from "vite";
 
-import type { PartialDeep } from "type-fest";
 import { defu } from "defu";
+import type { PartialDeep } from "type-fest";
 
 import solid from "vite-plugin-solid";
 
@@ -26,10 +25,8 @@ const convertToViteConfig = (cwd: string, config: SteinConfig): ViteConfig => {
         if (vitePlugin.position === "before-solid") {
           plugins.splice(solidIndex, 0, vitePlugin.plugin);
           solidIndex++;
-        }
-        else plugins.push(vitePlugin.plugin);
-      }
-      else plugins.push(vitePlugin);
+        } else plugins.push(vitePlugin.plugin);
+      } else plugins.push(vitePlugin);
     }
 
     if (plugin.vite) plugins.push(plugin.vite);
@@ -38,23 +35,29 @@ const convertToViteConfig = (cwd: string, config: SteinConfig): ViteConfig => {
   return {
     configFile: false,
     plugins,
-    
+
     root: cwd,
     server: { port: config.development.port, strictPort: true },
-    clearScreen: false
-  }
-}
+    clearScreen: false,
+  };
+};
 
-export const dev = async (cwd: string, config: SteinConfig): Promise<ViteDevServer> => {
+export const dev = async (
+  cwd: string,
+  config: SteinConfig,
+): Promise<ViteDevServer> => {
   const server = await createViteServer(convertToViteConfig(cwd, config));
-  
+
   await server.listen();
   return server;
 };
 
-export const build = async (cwd: string, config: SteinConfig): Promise<void> => {
-  await createViteBuild(convertToViteConfig(cwd, config))
-}
+export const build = async (
+  cwd: string,
+  config: SteinConfig,
+): Promise<void> => {
+  await createViteBuild(convertToViteConfig(cwd, config));
+};
 
 export interface SteinConfig {
   /**
@@ -69,27 +72,31 @@ export interface SteinConfig {
      * @default 3000
      */
     port: number;
-  }
+  };
 }
 
-export const defineConfig = (options: PartialDeep<SteinConfig>): SteinConfig => defu(options, {
-  plugins: [],
-  development: {
-    port: 3000,
-  }
-} satisfies SteinConfig);
+export const defineConfig = (options: PartialDeep<SteinConfig>): SteinConfig =>
+  defu(options, {
+    plugins: [],
+    development: {
+      port: 3000,
+    },
+  } satisfies SteinConfig);
 
 export interface Plugin {
-  name: string
+  name: string;
 
   /** Vite plugins involved in this process. */
-  extends?: Array<VitePluginOption | {
-    /** @default "after-solid" */
-    position: "before-solid" | "after-solid",
-    plugin: VitePluginOption
-  }>
-  
-  vite?: VitePluginOption
+  extends?: Array<
+    | VitePluginOption
+    | {
+        /** @default "after-solid" */
+        position: "before-solid" | "after-solid";
+        plugin: VitePluginOption;
+      }
+  >;
+
+  vite?: VitePluginOption;
 }
 
 /** Helper to have types when making a new plugin. */
