@@ -17,7 +17,7 @@ import * as clp from '@clack/prompts';
 import color from 'picocolors';
 
 import { installDependencies } from "../utils/installDependencies";
-import { installSteinPlugin } from "../installers/steinPluginInstaller";
+import { installSteinPlugin } from "../installers/plugins";
 import { updatePackageJSON } from "../utils/updatePackageJSON";
 
 export const createModule = async (str: unknown, options: unknown): Promise<void> => {
