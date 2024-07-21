@@ -47,9 +47,12 @@ export default definePlugin<Config>(() => {
         }
       }),
 
-      transformIndexHtml (html) {
-        const endHead = html.indexOf("</head>");
-        return html.slice(0, endHead) + `<script src="${TW_INJECT_ID}" type="module"></script>` + html.slice(endHead);
+      transformIndexHtml: {
+        order: "pre",
+        handler: (html) => {
+            const endHead = html.indexOf("</head>");
+            return html.slice(0, endHead) + `<script src="${TW_INJECT_ID}" type="module"></script>` + html.slice(endHead);
+          }
       }
     }
   } satisfies Plugin;

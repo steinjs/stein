@@ -68,9 +68,12 @@ export default definePlugin<Partial<Config>>((userConfiguration) => {
           return injects.join('\n')
       },
       
-      transformIndexHtml (html) {
-        const endHead = html.indexOf("</head>");
-        return html.slice(0, endHead) + `<script src="${UNO_INJECT_ID}" type="module"></script>` + html.slice(endHead);
+      transformIndexHtml: {
+        enforce: "pre",
+        handler: (html) => {
+          const endHead = html.indexOf("</head>");
+          return html.slice(0, endHead) + `<script src="${UNO_INJECT_ID}" type="module"></script>` + html.slice(endHead);
+        }
       }
     }
   } satisfies Plugin;
