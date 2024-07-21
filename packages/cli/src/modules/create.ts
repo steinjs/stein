@@ -104,6 +104,17 @@ const setupWizard = async (templateLink: string): Promise<void> => {
   const projectDirectory = await cloneTemplate(name, templateLink);
   await updatePackageJSON(projectDirectory, async (pkg) => {
     pkg.name = name;
+
+    for (const key of ['devDependencies', 'dependencies']) {
+      if (!pkg[key]) continue;
+      
+      // Replace all "workspace:*" to "latest".
+      for (const [packageName, version] of Object.entries(pkg[key])) {
+        if (version === "workspace:*") {
+          pkg[key][packageName] = "latest";
+        }
+      }
+    }
   });
 
   if (!typeScriptEnabled) {
