@@ -124,6 +124,22 @@ importers:
         specifier: ^5.5.3
         version: 5.5.3
 
+  packages/create-stein:
+    dependencies:
+      '@steinjs/cli':
+        specifier: workspace:*
+        version: link:../cli
+    devDependencies:
+      '@types/node':
+        specifier: ^20.14.11
+        version: 20.14.11
+      tsup:
+        specifier: ^8.1.2
+        version: 8.1.2(jiti@1.21.6)(postcss@8.4.39)(typescript@5.5.3)(yaml@2.4.5)
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
+
   plugins/tailwindcss:
     dependencies:
       autoprefixer:
