@@ -21,8 +21,8 @@ import { installDependencies } from "../utils/installDependencies";
 import { updatePackageJSON } from "../utils/updatePackageJSON";
 
 export const createModule = async (
-  str: unknown,
-  options: unknown,
+  str?: unknown,
+  options?: unknown,
 ): Promise<void> => {
   const bareTemplateLink = "github:steinjs/stein/examples/bare";
   await setupWizard(bareTemplateLink);
