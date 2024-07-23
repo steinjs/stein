@@ -7,4 +7,5 @@ export default defineConfig({
   minify: "terser",
   target: "esnext",
   outDir: "dist",
+  dts: true
 });
