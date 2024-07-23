@@ -1,5 +1,11 @@
 # create-stein
 
+## 0.0.2
+
+### Patch Changes
+
+- 57ab61b: Fix missing bin entry in package.json
+
 ## 0.0.1
 
 ### Patch Changes
