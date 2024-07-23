@@ -1,0 +1,35 @@
+{
+  "name": "create-stein",
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "version": "0.0.1",
+  "description": "Just the create module of the SteinJS CLI",
+  "repository": {
+    "directory": "packages/create-stein",
+    "url": "https://github.com/steinjs/stein",
+    "type": "git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "tsc"
+  },
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "default": "./dist/index.js"
+  },
+  "files": ["dist"],
+  "devDependencies": {
+    "@types/node": "^20.14.11",
+    "tsup": "^8.1.2",
+    "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "@steinjs/cli": "workspace:*"
+  }
+}
