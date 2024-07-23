@@ -27,7 +27,7 @@
     "dist"
   ],
   "bin": {
-    "stein": "./dist/index.js"
+    "stein": "./dist/cli.js"
   },
   "devDependencies": {
     "@types/node": "^20.14.11",
