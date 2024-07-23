@@ -12,8 +12,9 @@ export const findConfigFile = async (
       await fs.access(configFile, fs.constants.F_OK);
       return configFile;
     } catch {
-      console.error("Error: Stein config file not found");
+      // Ignore error
     }
   }
+  console.error("Stein config file not found");
   return undefined;
 };
