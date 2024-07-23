@@ -1,5 +1,11 @@
 # @steinjs/cli
 
+## 0.0.9
+
+### Patch Changes
+
+- 6448092: Fix error message about missing config appearing when config actually exists
+
 ## 0.0.8
 
 ### Patch Changes

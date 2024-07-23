@@ -1,5 +1,12 @@
 # create-stein
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [6448092]
+  - @steinjs/cli@0.0.9
+
 ## 0.0.3
 
 ### Patch Changes
