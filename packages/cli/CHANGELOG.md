@@ -1,5 +1,11 @@
 # @steinjs/cli
 
+## 0.0.8
+
+### Patch Changes
+
+- 77736f0: Add multiple entrypoints to split CLI logic and exports for other packages
+
 ## 0.0.7
 
 ### Patch Changes
