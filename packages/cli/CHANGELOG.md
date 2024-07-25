@@ -1,5 +1,11 @@
 # @steinjs/cli
 
+## 0.0.10
+
+### Patch Changes
+
+- 942c166: Drop config file for tailwind in plugin installation process (enables out of the box autocomplete)
+
 ## 0.0.9
 
 ### Patch Changes
