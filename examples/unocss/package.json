@@ -1,0 +1,21 @@
+{
+  "name": "unocss",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "stein dev",
+    "build": "stein build",
+    "lint": "tsc"
+  },
+  "devDependencies": {
+    "@steinjs/cli": "workspace:*",
+    "@steinjs/core": "workspace:*",
+    "typescript": "^5.5.3",
+    "stein-plugin-unocss": "workspace:*"
+  },
+  "dependencies": {
+    "solid-js": "^1.8.18",
+    "@unocss/reset": "latest"
+  }
+}
