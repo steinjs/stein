@@ -53,6 +53,28 @@ importers:
         specifier: ^5.5.3
         version: 5.5.3
 
+  examples/unocss:
+    dependencies:
+      '@unocss/reset':
+        specifier: latest
+        version: 0.61.5
+      solid-js:
+        specifier: ^1.8.18
+        version: 1.8.18
+    devDependencies:
+      '@steinjs/cli':
+        specifier: workspace:*
+        version: link:../../packages/cli
+      '@steinjs/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      stein-plugin-unocss:
+        specifier: workspace:*
+        version: link:../../plugins/unocss
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
+
   packages/cli:
     dependencies:
       '@clack/prompts':
@@ -170,6 +192,9 @@ importers:
 
   plugins/unocss:
     dependencies:
+      c12:
+        specifier: ^1.11.1
+        version: 1.11.1(magicast@0.3.4)
       defu:
         specifier: ^6.1.4
         version: 6.1.4

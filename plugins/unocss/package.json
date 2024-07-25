@@ -21,7 +21,9 @@
     "types": "./dist/index.d.ts",
     "default": "./dist/index.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
     "@steinjs/core": "workspace:*"
   },
@@ -32,6 +34,7 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "c12": "^1.11.1",
     "defu": "^6.1.4",
     "unocss": "^0.61.5"
   }
