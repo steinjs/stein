@@ -6,6 +6,7 @@ import { parseModule } from "meriyah";
 
 import { findConfigFile } from "../utils/findConfigFile";
 import { updatePackageJSON } from "../utils/updatePackageJSON";
+import { createFileWithContent } from "../utils/createFileWithContent";
 
 // Officially supported plugins, defined in `/plugins/**` packages.
 const AVAILABLE_PLUGINS = ["unocss", "tailwindcss"];
@@ -135,6 +136,8 @@ export const installSteinPlugin = async (
       pkg[key][dep.name] = "latest";
     }
   });
+
+  await dropPluginConfigFiles(projectDir, pluginName);
 };
 
 const getPluginArguments = (pluginName: string) => {
@@ -162,4 +165,27 @@ export const getPluginDependencies = (
   }
 
   return [];
+};
+
+const dropPluginConfigFiles = async (
+  projectDir: string,
+  pluginName: string,
+) => {
+  switch (pluginName) {
+    case "tailwindcss":
+      createFileWithContent(
+        projectDir,
+        "tailwind.config.js",
+        `
+/** @type {import('stein-plugin-tailwindcss').SteinTailwindConfig} */
+export default {
+  
+}
+`,
+      );
+      break;
+
+    default:
+      break;
+  }
 };
