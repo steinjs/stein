@@ -11,6 +11,8 @@ import type { Config as TailwindConfig } from "tailwindcss";
 import { findConfigFile } from "./utils/findConfigFile";
 import { loadConfig } from "c12";
 
+export type SteinTailwindConfig = Partial<TailwindConfig>;
+
 const TW_INJECT_ID = "__stein@tailwindcss.css";
 
 type Config = {
