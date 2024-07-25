@@ -179,7 +179,7 @@ const dropPluginConfigFiles = async (
         `
 /** @type {import('stein-plugin-tailwindcss').SteinTailwindConfig} */
 export default {
-  
+  // Add some config here, see https://tailwindcss.com/docs/configuration
 }
 `,
       );
