@@ -5,7 +5,7 @@ export const SUPPORTED_EXTENSIONS = [".js", ".ts", ".mjs", ".mts", ".cts"];
 
 export const findConfigFile = (projectDir: string) => {
   for (const ext of SUPPORTED_EXTENSIONS) {
-    const configFile = path.join(projectDir, `tailwind.config${ext}`);
+    const configFile = path.join(projectDir, `uno.config${ext}`);
     try {
       fs.accessSync(configFile, fs.constants.F_OK);
       return configFile;
