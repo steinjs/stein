@@ -24,4 +24,7 @@ export default defineConfig({
 
 ## Options
 
-> For now, there's no options available. We're trying to see what would be the best way to configure TailwindCSS in Stein. If you have any suggestions, feel free to open an issue or a pull request.
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `configPath` | `string` | `"tailwind.config.js"` | Path to the Tailwind config file, e.g. `"configs/tailwind.config.js"`. |
+| `config` | `object` | `{ content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"]}` | A direct way to change your Tailwind config (only recommended if you have a very small config, otherwise please use an external config file) |
