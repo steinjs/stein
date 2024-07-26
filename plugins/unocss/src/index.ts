@@ -1,4 +1,9 @@
-import { type Plugin, definePlugin } from "@steinjs/core";
+import {
+  type Plugin,
+  type SteinConfig,
+  definePlugin,
+  restartServer,
+} from "@steinjs/core";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -60,13 +65,15 @@ const defaultConfiguration: Config = {
   config: {},
 };
 
-export default definePlugin<Config>((userConfiguration) => {
+export default definePlugin<Config>(async (userConfiguration) => {
   const steinConfigMerged = defu(
     userConfiguration,
     defaultConfiguration,
   ) as Config;
   const { injectEntry, injectReset, injectExtra } = steinConfigMerged;
   const injects = injectExtra ?? [];
+
+  const localUnoConfigFile = getLocalUnoCssConfigFile(steinConfigMerged); // We need this for getting back the config file that is used to watch for changes
 
   if (injectReset) {
     const resetPath =
@@ -86,7 +93,7 @@ export default definePlugin<Config>((userConfiguration) => {
     extends: [
       {
         position: "before-solid",
-        plugin: unocss(loadUnoConfig(steinConfigMerged)),
+        plugin: unocss(await loadUnoConfig(steinConfigMerged)),
       },
     ],
     vite: {
@@ -99,6 +106,24 @@ export default definePlugin<Config>((userConfiguration) => {
 
       load(id) {
         if (id.endsWith(UNO_INJECT_ID)) return injects.join("\n");
+      },
+
+      configureServer: async (server) => {
+        server.watcher.add(localUnoConfigFile ?? []);
+        server.watcher.on("add", await handleUnoConfigChange);
+        server.watcher.on("change", await handleUnoConfigChange);
+        server.watcher.on("unlink", await handleUnoConfigChange);
+
+        async function handleUnoConfigChange(file: string) {
+          if (file !== localUnoConfigFile) return;
+
+          const { config } = await loadConfig({
+            cwd: process.cwd(),
+            name: "stein",
+          });
+
+          await restartServer(server, config as SteinConfig);
+        }
       },
 
       transformIndexHtml: {
@@ -117,27 +142,21 @@ export default definePlugin<Config>((userConfiguration) => {
   } satisfies Plugin;
 });
 
-const loadUnoConfig = (steinConfigMerged: Partial<Config>) => {
+const loadUnoConfig = async (steinConfigMerged: Partial<Config>) => {
   const { configFile, cwd } = getLocalConfigInfo(steinConfigMerged);
 
   // Try to load the local config if any was found
-  loadConfig({
+  const { config } = await loadConfig({
     cwd,
     configFile,
-  }).then((cfg) => {
-    const config = cfg.config;
-
-    const tailwindConfig = defu(config ?? {}, steinConfigMerged.config);
-
-    console.log("POPOAWKDPOKAWD");
-
-    return tailwindConfig;
   });
 
-  return steinConfigMerged.config;
+  const unoConfig = defu(config ?? {}, steinConfigMerged.config);
+
+  return unoConfig;
 };
 
-const getLocalTailwindConfigFile = (steinConfigMerged: Partial<Config>) => {
+const getLocalUnoCssConfigFile = (steinConfigMerged: Partial<Config>) => {
   // Check if file specified by user exists
   const specifiedConfigFound = checkIfFileExists(steinConfigMerged.configPath);
 
@@ -165,7 +184,7 @@ const getLocalConfigInfo = (steinConfigMerged: Partial<Config>) => {
   const specifiedConfigFound = checkIfFileExists(steinConfigMerged.configPath);
 
   if (!specifiedConfigFound) {
-    // If we don't find our custom file, pass a default taiwind.config name for c12 to search for in the project root
+    // If we don't find our custom file, pass a default uno.config name for c12 to search for in the project root
     return {
       configFile: "uno.config",
       cwd: process.cwd(),
