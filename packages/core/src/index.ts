@@ -11,11 +11,16 @@ import type { PartialDeep } from "type-fest";
 
 import solid from "vite-plugin-solid";
 
-const convertToViteConfig = (cwd: string, config: SteinConfig): ViteConfig => {
+const convertToViteConfig = async (
+  cwd: string,
+  config: SteinConfig,
+): Promise<ViteConfig> => {
   let solidIndex = 0;
   const plugins: VitePluginOption = [solid()];
 
-  for (const plugin of config.plugins) {
+  for (const pluginPromise of config.plugins) {
+    const plugin = await pluginPromise;
+
     // We need to register the plugins that were made for Vite.
     for (const vitePlugin of plugin.extends ?? []) {
       if (!vitePlugin) continue; // skip if false or undefined.
@@ -46,7 +51,7 @@ export const dev = async (
   cwd: string,
   config: SteinConfig,
 ): Promise<ViteDevServer> => {
-  const server = await createViteServer(convertToViteConfig(cwd, config));
+  const server = await createViteServer(await convertToViteConfig(cwd, config));
 
   await server.listen();
   return server;
@@ -56,7 +61,7 @@ export const build = async (
   cwd: string,
   config: SteinConfig,
 ): Promise<void> => {
-  await createViteBuild(convertToViteConfig(cwd, config));
+  await createViteBuild(await convertToViteConfig(cwd, config));
 };
 
 export interface SteinConfig {
@@ -64,7 +69,7 @@ export interface SteinConfig {
    * Stein plugins to use in the project.
    * @default []
    */
-  plugins: Plugin[];
+  plugins: Promise<Plugin>[];
 
   development: {
     /**
@@ -100,4 +105,5 @@ export interface Plugin {
 }
 
 /** Helper to have types when making a new plugin. */
-export const definePlugin = <T>(plugin: (config?: T) => Plugin) => plugin;
+export const definePlugin = <T>(plugin: (config?: T) => Promise<Plugin>) =>
+  plugin;
