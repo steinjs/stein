@@ -11,6 +11,8 @@ import type { PartialDeep } from "type-fest";
 
 import solid from "vite-plugin-solid";
 
+const sockets = new Set();
+
 const convertToViteConfig = async (
   cwd: string,
   config: SteinConfig,
@@ -54,6 +56,16 @@ export const dev = async (
   const server = await createViteServer(await convertToViteConfig(cwd, config));
 
   await server.listen();
+  server.httpServer?.on("connection", (socket) => {
+    sockets.add(socket);
+    console.log("Socket connected");
+
+    server.httpServer?.on("close", () => {
+      console.log("Socket deleted");
+      sockets.delete(socket);
+    });
+  });
+
   return server;
 };
 
@@ -75,21 +87,16 @@ export const restartServer = async (
   server.httpServer?.close();
   server.httpServer?.emit("close");
 
-  if (server.ws) {
-    try {
-      await server.ws.close();
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  //@ts-ignore
+  server.httpServer = undefined; // Override with undefined to force garbage collection.
 
-  if (server.hot) {
-    try {
-      await server.hot.close();
-    } catch (error) {
-      console.log(error);
+  try {
+    for (const socket of sockets) {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      (socket as any).destroy();
+      sockets.delete(socket);
     }
-  }
+  } catch {}
 
   // Add a small delay to ensure port is released (spoiler: it's not when this func called from the CLI)
   await new Promise((resolve) => setTimeout(resolve, 1000));
