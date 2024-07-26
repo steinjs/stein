@@ -64,6 +64,39 @@ export const build = async (
   await createViteBuild(await convertToViteConfig(cwd, config));
 };
 
+export const restartServer = async (
+  server: ViteDevServer,
+  config: SteinConfig,
+): Promise<ViteDevServer> => {
+  await server.close();
+
+  // For some reason we have to do this.
+  server.httpServer?.removeAllListeners();
+  server.httpServer?.close();
+  server.httpServer?.emit("close");
+
+  if (server.ws) {
+    try {
+      await server.ws.close();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  if (server.hot) {
+    try {
+      await server.hot.close();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // Add a small delay to ensure port is released (spoiler: it's not when this func called from the CLI)
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  return await dev(process.cwd(), config);
+};
+
 export interface SteinConfig {
   /**
    * Stein plugins to use in the project.
