@@ -1,5 +1,11 @@
 # stein-plugin-tailwindcss
 
+## 0.0.5
+
+### Patch Changes
+
+- 942c166: Add support for external configs with auto-reload
+
 ## 0.0.4
 
 ### Patch Changes
