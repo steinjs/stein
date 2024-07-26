@@ -1,4 +1,4 @@
-import { type SteinConfig, dev } from "@steinjs/core";
+import { type SteinConfig, dev, restartServer } from "@steinjs/core";
 import { watchConfig } from "c12";
 import type { Command } from "commander";
 
@@ -6,6 +6,7 @@ export const devModule = async (options: unknown, command: Command) => {
   console.clear();
 
   const cwd = process.cwd();
+  // biome-ignore lint/style/useConst: <explanation>
   let server: Awaited<ReturnType<typeof dev>> | undefined;
 
   const { config } = await watchConfig<SteinConfig>({
@@ -13,14 +14,7 @@ export const devModule = async (options: unknown, command: Command) => {
     name: "stein",
     onUpdate: async ({ newConfig: { config } }) => {
       if (server) {
-        await server.close();
-        // For some reason we have to do this.
-        server.httpServer?.close();
-
-        console.clear();
-        server = await dev(cwd, config);
-        server.printUrls();
-        server.bindCLIShortcuts({ print: true });
+        await restartServer(server, config);
       }
     },
   });
