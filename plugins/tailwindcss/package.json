@@ -3,7 +3,7 @@
   "publishConfig": {
     "provenance": true
   },
-  "version": "0.0.5",
+  "version": "1.0.0",
   "description": "Stein plugin for TailwindCSS.",
   "repository": {
     "directory": "plugins/tailwindcss",

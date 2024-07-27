@@ -1,5 +1,11 @@
 # @steinjs/core
 
+## 0.1.0
+
+### Minor Changes
+
+- ce55f0e: Add a proper server reload on config update method
+
 ## 0.0.4
 
 ### Patch Changes

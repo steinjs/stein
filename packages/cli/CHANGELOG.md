@@ -1,5 +1,16 @@
 # @steinjs/cli
 
+## 0.1.0
+
+### Minor Changes
+
+- ce55f0e: Add a proper server reload on config update method
+
+### Patch Changes
+
+- Updated dependencies [ce55f0e]
+  - @steinjs/core@0.1.0
+
 ## 0.0.10
 
 ### Patch Changes
