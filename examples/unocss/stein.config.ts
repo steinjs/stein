@@ -4,9 +4,9 @@ import {defineConfig} from "@steinjs/core";
 // See the documentation for more details.
 export default defineConfig({
   plugins: [unocss({
-    injectReset: true,
+    injectReset: true
   })],
   development: {
-    port: 1234
+    port: 3000
   }
 });
