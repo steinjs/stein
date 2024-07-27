@@ -57,7 +57,7 @@ importers:
     dependencies:
       '@unocss/reset':
         specifier: latest
-        version: 0.61.5
+        version: 0.61.6
       solid-js:
         specifier: ^1.8.18
         version: 1.8.18
@@ -120,6 +120,9 @@ importers:
 
   packages/core:
     dependencies:
+      c12:
+        specifier: ^1.11.1
+        version: 1.11.1(magicast@0.3.4)
       defu:
         specifier: ^6.1.4
         version: 6.1.4
@@ -167,9 +170,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.19(postcss@8.4.39)
-      c12:
-        specifier: ^1.11.1
-        version: 1.11.1(magicast@0.3.4)
       defu:
         specifier: ^6.1.4
         version: 6.1.4
@@ -192,9 +192,6 @@ importers:
 
   plugins/unocss:
     dependencies:
-      c12:
-        specifier: ^1.11.1
-        version: 1.11.1(magicast@0.3.4)
       defu:
         specifier: ^6.1.4
         version: 6.1.4
@@ -1016,6 +1013,9 @@ packages:
 
   '@unocss/reset@0.61.5':
     resolution: {integrity: sha512-5FKNsHnke9J1Z0T4prOZn9hkWh86c6Px+Oh3xf8mDd6dDw8CjzYMRxZEKti0gt13NcsO29G1vLGM7UjG1sCamg==}
+
+  '@unocss/reset@0.61.6':
+    resolution: {integrity: sha512-fAlE2EbG5h6yS6oIBDOKw4VHogLcl/Ao9EbrcNe1uRc79cA1rvSkqeMAxLHvGxwXAzu7LIovknR+pzASeVLZBg==}
 
   '@unocss/rule-utils@0.61.5':
     resolution: {integrity: sha512-sCHnpCQoj3/ZmCjYo+oW3+4r5Z8kFI2snEL+miU2Uk0SqCgY1k0cUIYivj5L9ghp29p8VjEusX9M01QEZOYK7g==}
@@ -3151,6 +3151,8 @@ snapshots:
       '@unocss/rule-utils': 0.61.5
 
   '@unocss/reset@0.61.5': {}
+
+  '@unocss/reset@0.61.6': {}
 
   '@unocss/rule-utils@0.61.5':
     dependencies:

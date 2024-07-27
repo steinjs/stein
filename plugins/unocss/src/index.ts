@@ -1,22 +1,25 @@
 import {
   type Plugin,
-  type SteinConfig,
   definePlugin,
-  restartServer,
+  findConfigurationScript,
+  findConfigurationScriptFullPath,
+  readConfigurationScript,
+  waitToAddToWatcher,
 } from "@steinjs/core";
-import fs from "node:fs";
-import path from "node:path";
 
 import { defu } from "defu";
-import { loadConfig } from "c12";
-import { findConfigFile } from "./utils/findConfigFile";
 
 import unocss from "unocss/vite";
-import type { UserConfig } from "unocss";
+import type { UserConfig as UnoConfig } from "unocss";
 
-export { defineConfig } from "unocss";
+// Re-export to prevent users to install
+// unocss dependency in their project
+// for `uno.config.ts`.
+export * from "unocss";
 
 const UNO_INJECT_ID = "__stein@unocss";
+const UNO_DEFAULT_CONFIG_NAME = "uno.config";
+const UNO_DEFAULT_CONFIG_PATH = UNO_DEFAULT_CONFIG_NAME + ".ts";
 
 interface Config {
   /**
@@ -24,7 +27,7 @@ interface Config {
    *
    * @default true
    */
-  injectEntry?: boolean;
+  injectEntry: boolean;
 
   /**
    * Include reset styles.
@@ -33,20 +36,20 @@ interface Config {
    * @default false
    * @example "@unocss/reset/normalize.css"
    */
-  injectReset?: boolean | string;
+  injectReset: boolean | string;
 
   /**
    * Inject extra imports.
    *
    * @default []
    */
-  injectExtra?: string[];
+  injectExtra: string[];
 
   /**
    * A direct way to change your UnoCSS config
    * (only recommended if you have a very small config, otherwise please use an external config file)
    */
-  config?: Partial<UserConfig>;
+  config: Partial<UnoConfig>;
 
   /**
    * Override for the path to your UnoCSS config file
@@ -54,159 +57,98 @@ interface Config {
    * @default "uno.config.ts"
    * @example "configs/uno.config.ts"
    */
-  configPath?: string;
+  configPath: string;
 }
 
 const defaultConfiguration: Config = {
   injectEntry: true,
   injectReset: false,
   injectExtra: [],
-  configPath: "uno.config.ts",
+  configPath: UNO_DEFAULT_CONFIG_PATH,
   config: {},
 };
 
-export default definePlugin<Config>(async (userConfiguration) => {
-  const steinConfigMerged = defu(
-    userConfiguration,
-    defaultConfiguration,
-  ) as Config;
-  const { injectEntry, injectReset, injectExtra } = steinConfigMerged;
-  const injects = injectExtra ?? [];
+export default definePlugin<Partial<Config>>(
+  (userConfiguration) => async () => {
+    const pluginConfig = defu(userConfiguration, defaultConfiguration);
 
-  const localUnoConfigFile = getLocalUnoCssConfigFile(steinConfigMerged); // We need this for getting back the config file that is used to watch for changes
+    const { injectEntry, injectReset, injectExtra } = pluginConfig;
+    const injects = injectExtra ?? [];
 
-  if (injectReset) {
-    const resetPath =
-      typeof injectReset === "string"
-        ? injectReset
-        : "@unocss/reset/tailwind.css";
+    const unoConfigFilePath = findConfigurationScriptFullPath(
+      pluginConfig.configPath,
+      UNO_DEFAULT_CONFIG_NAME,
+    );
 
-    injects.push(`import ${JSON.stringify(resetPath)}`);
-  }
+    if (injectReset) {
+      const resetPath =
+        typeof injectReset === "string"
+          ? injectReset
+          : "@unocss/reset/tailwind.css";
 
-  if (injectEntry) {
-    injects.push('import "uno.css"');
-  }
+      injects.push(`import ${JSON.stringify(resetPath)}`);
+    }
 
-  return {
-    name: "unocss",
-    extends: [
-      {
-        position: "before-solid",
-        plugin: unocss(await loadUnoConfig(steinConfigMerged)),
-      },
-    ],
-    vite: {
-      name: "stein:unocss",
-      enforce: "pre",
+    if (injectEntry) {
+      injects.push('import "uno.css"');
+    }
 
-      resolveId(id) {
-        if (id === UNO_INJECT_ID) return id;
-      },
-
-      load(id) {
-        if (id.endsWith(UNO_INJECT_ID)) return injects.join("\n");
-      },
-
-      configureServer: async (server) => {
-        server.watcher.add(localUnoConfigFile ?? []);
-        server.watcher.on("add", await handleUnoConfigChange);
-        server.watcher.on("change", await handleUnoConfigChange);
-        server.watcher.on("unlink", await handleUnoConfigChange);
-
-        async function handleUnoConfigChange(file: string) {
-          if (file !== localUnoConfigFile) return;
-
-          const { config } = await loadConfig({
-            cwd: process.cwd(),
-            name: "stein",
-          });
-
-          await restartServer(server, config as SteinConfig);
-        }
-      },
-
-      transformIndexHtml: {
+    return {
+      name: "unocss",
+      extends: [
+        {
+          position: "before-solid",
+          plugin: unocss(
+            await readUnoConfig(
+              pluginConfig.configPath,
+              // should merge with inlined config
+              <UnoConfig>pluginConfig.config,
+            ),
+          ),
+        },
+      ],
+      vite: {
+        name: "stein:unocss",
         enforce: "pre",
-        handler: (html) => {
-          const endHead = html.indexOf("</head>");
-          return (
-            // biome-ignore lint: better readability
-            html.slice(0, endHead) +
-            `<script src="${UNO_INJECT_ID}" type="module"></script>` +
-            html.slice(endHead)
-          );
+
+        resolveId(id) {
+          if (id === UNO_INJECT_ID) return id;
+        },
+
+        load(id) {
+          if (id.endsWith(UNO_INJECT_ID)) return injects.join("\n");
+        },
+
+        configureServer: async (server) => {
+          if (!unoConfigFilePath) return;
+          waitToAddToWatcher([unoConfigFilePath], server);
+        },
+
+        transformIndexHtml: {
+          order: "pre",
+          handler: (html) => {
+            const endHead = html.indexOf("</head>");
+            return (
+              // biome-ignore lint: better readability
+              html.slice(0, endHead) +
+              `<script src="${UNO_INJECT_ID}" type="module"></script>` +
+              html.slice(endHead)
+            );
+          },
         },
       },
-    },
-  } satisfies Plugin;
-});
+    } satisfies Plugin;
+  },
+);
 
-const loadUnoConfig = async (steinConfigMerged: Partial<Config>) => {
-  const { configFile, cwd } = getLocalConfigInfo(steinConfigMerged);
-
-  // Try to load the local config if any was found
-  const { config } = await loadConfig({
-    cwd,
-    configFile,
-  });
-
-  const unoConfig = defu(config ?? {}, steinConfigMerged.config);
-
-  return unoConfig;
-};
-
-const getLocalUnoCssConfigFile = (steinConfigMerged: Partial<Config>) => {
-  // Check if file specified by user exists
-  const specifiedConfigFound = checkIfFileExists(steinConfigMerged.configPath);
-
-  // Use specified config if found, otherwise try to find one in the project folder
-  const localTailwindConfigFile = specifiedConfigFound
-    ? path.join(process.cwd(), steinConfigMerged.configPath ?? "")
-    : findConfigFile(process.cwd());
-
-  return localTailwindConfigFile;
-};
-
-const checkIfFileExists = (path: string | undefined) => {
-  if (!path) return false;
-
-  try {
-    fs.accessSync(path, fs.constants.F_OK);
-    return true;
-  } catch {
-    return false;
-  }
-};
-
-const getLocalConfigInfo = (steinConfigMerged: Partial<Config>) => {
-  // Check if file specified by user exists
-  const specifiedConfigFound = checkIfFileExists(steinConfigMerged.configPath);
-
-  if (!specifiedConfigFound) {
-    // If we don't find our custom file, pass a default uno.config name for c12 to search for in the project root
-    return {
-      configFile: "uno.config",
-      cwd: process.cwd(),
-    };
-  }
-
-  // Get info about custom config path
-  const specifiedConfigPath = path.dirname(
-    path.join(process.cwd(), steinConfigMerged.configPath ?? ""),
-  );
-  const specifiedConfigFileName = path.basename(
-    path.join(process.cwd(), steinConfigMerged.configPath ?? ""),
+const readUnoConfig = async (
+  configPath = UNO_DEFAULT_CONFIG_PATH,
+  inlineConfig: UnoConfig,
+): Promise<UnoConfig> => {
+  const { cwd, configName } = findConfigurationScript(
+    configPath,
+    UNO_DEFAULT_CONFIG_NAME,
   );
 
-  // Remove file extension from config File name (.ts, .js, .cjs, etc.)
-  const specifiedConfigFileNameWithoutExtension = path.basename(
-    specifiedConfigFileName,
-    path.extname(specifiedConfigFileName),
-  );
-
-  return {
-    configFile: specifiedConfigFileNameWithoutExtension,
-    cwd: specifiedConfigPath,
-  };
+  return readConfigurationScript(cwd, configName, inlineConfig);
 };
