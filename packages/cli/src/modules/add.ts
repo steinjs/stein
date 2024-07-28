@@ -27,7 +27,14 @@ export const addModule = async (integrations: string[]) => {
     return;
   }
 
-  for (const integration of integrations) {
+  for (let integration of integrations) {
+    // Add aliases for tailwind -> tailwindcss and uno -> unocss
+    if (integration === "tailwind") {
+      integration = "tailwindcss";
+    } else if (integration === "uno") {
+      integration = "unocss";
+    }
+
     if (AVAILABLE_PLUGINS.includes(integration)) {
       await actionWithSpinner(
         async () => await installSteinPlugin(integration, process.cwd()),
