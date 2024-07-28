@@ -4,6 +4,10 @@
   </picture>
 </p>
 
+![NPM Version](https://img.shields.io/npm/v/%40steinjs%2Fcore?style=flat&color=5a8dbd)
+![NPM Downloads](https://img.shields.io/npm/dm/%40steinjs%2Fcore?style=flat&color=5a8dbd)
+![GitHub License](https://img.shields.io/github/license/steinjs/stein?style=flat&color=5a8dbd)
+
 Stein is a framework for [SolidJS](https://solidjs.com) built on top of Vite to provide helpers and tools to make your life easier while developing SPAs. It is modular with a plugin system based on Vite plugins and a CLI to make it easy to get started.
 
 ## ⬇️ Install
@@ -29,7 +33,7 @@ We welcome contributions to Stein. If you're interested in contributing, please 
 
 Here's some ways you can help us:
 - **Help us test the framework**: At the moment, we are just two developers working on the project. Any help in testing the framework and making sure it works well is appreciated to help us iron out any initial issues.
-- **Help us improve the documentation**: The documentation is still a work in progress and we would love your help to make it better.
+- **Write documentation**: The documentation is still a work in progress and we would love your help to make it better.
 - **Provide feedback and suggestions**: We're always looking for feedback on how we can improve the framework. If you have any suggestions, please let us know!
 
 ## 👥 Community
@@ -40,7 +44,7 @@ If you want to get in touch with the community and stay up to date, feel free to
   <img src="https://contrib.rocks/image?repo=steinjs/stein" />
 </a>
 
-## License
+## 📜 License
 We love open source and are grateful for any support we receive from the community. Stein is free and open source and licensed under the MIT license.
 
 *Copyright © 2024 Stein contributors*
