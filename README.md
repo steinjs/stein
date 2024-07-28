@@ -16,6 +16,10 @@ The **recommended** way to get started using Stein is by running the command bel
 ```bash
 npm create stein@latest
 ```
+The process should look something like this:
+
+![stein_cli](https://github.com/user-attachments/assets/8b26aa5b-1471-4177-a8c1-e3d679a96853)
+
 For more detailed instructions, please reference our [Getting Started](https://stein.js.org/docs/core/) guide.
 
 ## ⁉️ Why Stein?
