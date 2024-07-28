@@ -19,6 +19,7 @@ import color from "picocolors";
 import { installSteinPlugin } from "../installers/plugins";
 import { installDependencies } from "../utils/installDependencies";
 import { updatePackageJSON } from "../utils/updatePackageJSON";
+import { installSteinTool } from "../installers/tools";
 
 export const createModule = async (
   str?: unknown,
@@ -157,7 +158,7 @@ const setupWizard = async (templateLink: string): Promise<void> => {
   }
 
   if (tools) {
-    // TODO
+    await installProjectTools(projectDirectory, tools, typeScriptEnabled);
   }
 
   const shouldInstallDependencies = await confirm({
@@ -264,4 +265,21 @@ const installProjectPlugins = async (
   }
 
   s.stop("Installed plugins successfully.");
+};
+
+const installProjectTools = async (
+  projectDir: string,
+  tools: string[],
+  typeScriptEnabled: boolean,
+): Promise<void> => {
+  // If there is both eslint and prettier in the tools array, remove those elements and replace them with eslint-prettier
+  if (tools.includes("eslint") && tools.includes("prettier")) {
+    tools.splice(tools.indexOf("eslint"), 1);
+    tools.splice(tools.indexOf("prettier"), 1);
+    tools.push("eslint-prettier");
+  }
+
+  for (const tool of tools) {
+    await installSteinTool(tool, projectDir, typeScriptEnabled);
+  }
 };

@@ -1,3 +1,5 @@
+import fs from "node:fs/promises";
+
 import {
   cancel,
   confirm,
@@ -27,6 +29,15 @@ export const addModule = async (integrations: string[]) => {
     return;
   }
 
+  const projectUsesTypeScript = await projectUsesTypescript(process.cwd());
+
+  // If there is both eslint and prettier in the tools array, remove those elements and replace them with eslint-prettier (adds special config for using both together)
+  if (integrations.includes("eslint") && integrations.includes("prettier")) {
+    integrations.splice(integrations.indexOf("eslint"), 1);
+    integrations.splice(integrations.indexOf("prettier"), 1);
+    integrations.push("eslint-prettier");
+  }
+
   for (let integration of integrations) {
     // Add aliases for tailwind -> tailwindcss and uno -> unocss
     if (integration === "tailwind") {
@@ -44,7 +55,12 @@ export const addModule = async (integrations: string[]) => {
       successfulIntegrationsAdded++;
     } else if (AVAILABLE_TOOLS.includes(integration)) {
       await actionWithSpinner(
-        async () => await installSteinTool(integration, process.cwd()),
+        async () =>
+          await installSteinTool(
+            integration,
+            process.cwd(),
+            projectUsesTypeScript,
+          ),
         `Installing ${integration} tool...`,
         `Installed ${integration} tool successfully!`,
       );
@@ -88,5 +104,15 @@ const actionWithSpinner = async (
     await action();
   } finally {
     s.stop(endMessage);
+  }
+};
+
+const projectUsesTypescript = async (projectDir: string) => {
+  // Return if tsconfig.json exists
+  try {
+    await fs.access(`${projectDir}/tsconfig.json`, fs.constants.F_OK);
+    return true;
+  } catch {
+    return false;
   }
 };
