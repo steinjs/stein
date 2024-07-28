@@ -21,7 +21,7 @@ For more detailed instructions, please reference our [Getting Started](https://s
 ## ⁉️ Why Stein?
 Stein was created to fill a niche in the SolidJS community. We aim to create a framework that simplifies the initial project setup and provides a rich experience for a SolidJS SPA. SolidStart is a great choice if you wish to use SSR, but if you prefer using an SPA, Stein is the right choice for you.
 
-**Features**:
+### Features:
 - A solid foundation for your SolidJS SPA
 - Improved project scaffolding and setup using the Stein CLI
 - Modular plugin system with plug and play experience (inspired by Nuxt)
