@@ -20,6 +20,8 @@ export const installSteinTool = async (
     throw new Error(`Tool ${tool} is not a valid stein plugin`);
   }
 
+  // TODO: Cancel the process if tool is already installed
+
   switch (tool) {
     case "eslint":
       createFileWithContent(
