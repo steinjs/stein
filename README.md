@@ -25,23 +25,22 @@ Stein was created to fill a niche in the SolidJS community. We aim to create a f
 - More coming soon (help us out!)
 
 ## 🛠️ Contributing
-We welcome contributions to Stein. If you're interested in contributing, please read our [contributing guide](https://github.com/steinjs/stein/blob/main/CONTRIBUTING.md) and reach out through GitHub (issues, discussions) or on [Discord]() to ask about something you'd like to work on.
+We welcome contributions to Stein. If you're interested in contributing, please read our [contributing guide](https://github.com/steinjs/stein/blob/main/CONTRIBUTING.md) and reach out through GitHub (issues, discussions) or on [Discord](https://discord.gg/BFTHz4x9UJ) to ask about something you'd like to work on.
 
 Here's some ways you can help us:
 - **Help us test the framework**: At the moment, we are just two developers working on the project. Any help in testing the framework and making sure it works well is appreciated to help us iron out any initial issues.
 - **Help us improve the documentation**: The documentation is still a work in progress and we would love your help to make it better.
 - **Provide feedback and suggestions**: We're always looking for feedback on how we can improve the framework. If you have any suggestions, please let us know!
 
-
 ## 👥 Community
-If you want to get in touch with the community and stay up to date, feel free to join our [Discord server](). This is where you can chat with us, get some insights into the current state of development and ask any questions.
+If you want to get in touch with the community and stay up to date, feel free to join our [Discord server](https://discord.gg/BFTHz4x9UJ). This is where you can chat with us, get some insights into the current state of development and ask any questions.
 
 ### Contributors
 <a href="https://github.com/steinjs/stein/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=steinjs/stein" />
 </a>
 
-### License
-The project is free and open sourced under the MIT license.
+## License
+We love open source and are grateful for any support we receive from the community. Stein is free and open source and licensed under the MIT license.
 
 *Copyright © 2024 Stein contributors*
