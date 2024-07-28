@@ -37,7 +37,6 @@ export const installSteinTool = async (
       break;
 
     case "eslint-prettier":
-      console.log("WE ARE INSIDE ESLINT-PRETTIER WOOOOO");
       createFileWithContent(
         projectDir,
         "eslint.config.js",
