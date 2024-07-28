@@ -1,19 +1,47 @@
 <p align="center">
   <picture>
-    <img alt="Pawnote Banner" src="https://github.com/steinjs/stein/blob/39642453d9e10aa181e4da245d89ba57a51adffd/.github/stein_banner.svg">
+    <img alt="Stein Banner" src="https://github.com/steinjs/stein/blob/39642453d9e10aa181e4da245d89ba57a51adffd/.github/stein_banner.svg" width="100%">
   </picture>
 </p>
 
-Stein is a framework for [SolidJS](https://solidjs.com) built on top of Vite to provide helpers and tools to make your life easier while developing SPAs.
+Stein is a framework for [SolidJS](https://solidjs.com) built on top of Vite to provide helpers and tools to make your life easier while developing SPAs. It is modular with a plugin system based on Vite plugins and a CLI to make it easy to get started.
 
-## Development
+## ⬇️ Install
+The **recommended** way to get started using Stein is by running the command below:
 
-While building, you can use `pnpm dev` to watch the files and rebuild the project on changes.
+```bash
+npm create stein@latest
+```
+For more detailed instructions, please reference our [Getting Started](https://stein.js.org/docs/core/) guide.
 
-You can then run [examples](./examples/) projects manually. Packages should be installed using `workspace:*` notation to make sure they're linked in the monorepo.
+## ⁉️ Why Stein?
+Stein was created to fill a niche in the SolidJS community. We aim to create a framework that simplifies the initial project setup and provides a rich experience for a SolidJS SPA. SolidStart is a great choice if you wish to use SSR, but if you prefer using an SPA, Stein is the right choice for you.
 
-If you need to lint everything, you can run `pnpm lint`.
+**Features**:
+- A solid foundation for your SolidJS SPA
+- Improved project scaffolding and setup using the Stein CLI
+- Modular plugin system with plug and play experience (inspired by Nuxt)
+- Zero-config integrations with popular libraries like Tailwind and UnoCSS (more coming soon)
+- More coming soon (help us out!)
 
-## Versioning
+## 🛠️ Contributing
+We welcome contributions to Stein. If you're interested in contributing, please read our [contributing guide](https://github.com/steinjs/stein/blob/main/CONTRIBUTING.md) and reach out through GitHub (issues, discussions) or on [Discord]() to ask about something you'd like to work on.
 
-Run `pnpm changeset` to create a new changeset. This will prompt you to select the packages you want to bump and the type of bump you want to apply.
+Here's some ways you can help us:
+- **Help us test the framework**: At the moment, we are just two developers working on the project. Any help in testing the framework and making sure it works well is appreciated to help us iron out any initial issues.
+- **Help us improve the documentation**: The documentation is still a work in progress and we would love your help to make it better.
+- **Provide feedback and suggestions**: We're always looking for feedback on how we can improve the framework. If you have any suggestions, please let us know!
+
+
+## 👥 Community
+If you want to get in touch with the community and stay up to date, feel free to join our [Discord server](). This is where you can chat with us, get some insights into the current state of development and ask any questions.
+
+### Contributors
+<a href="https://github.com/steinjs/stein/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=steinjs/stein" />
+</a>
+
+### License
+The project is free and open sourced under the MIT license.
+
+*Copyright © 2024 Stein contributors*
