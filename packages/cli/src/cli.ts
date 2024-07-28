@@ -4,6 +4,7 @@ import { version } from "../package.json";
 import { buildModule } from "./modules/build";
 import { createModule } from "./modules/create";
 import { devModule } from "./modules/dev";
+import { addModule } from "./modules/add";
 
 const program = new Command();
 
@@ -11,6 +12,14 @@ program
   .name("stein")
   .description("CLI to run projects and scaffold a new stein project")
   .version(version);
+
+program
+  .command("add")
+  .description(
+    "add an integration (plugin or tool) to an existing stein project",
+  )
+  .argument("<integrations...>", "integrations to add")
+  .action(addModule);
 
 program
   .command("dev")
