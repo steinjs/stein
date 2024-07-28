@@ -1,5 +1,11 @@
 # @steinjs/cli
 
+## 0.2.0
+
+### Minor Changes
+
+- f335434: New add command for quickly adding plugins to existing projects & completion of tool installer
+
 ## 0.1.0
 
 ### Minor Changes
