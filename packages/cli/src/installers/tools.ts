@@ -1,4 +1,4 @@
-const AVAILABLE_TOOLS = ["biome", "eslint", "prettier"];
+export const AVAILABLE_TOOLS = ["biome", "eslint", "prettier"];
 
 export const installSteinTool = async (tool: string, projectDir: string) => {
   if (!AVAILABLE_TOOLS.includes(tool)) {

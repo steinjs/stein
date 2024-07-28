@@ -9,7 +9,7 @@ import { updatePackageJSON } from "../utils/updatePackageJSON";
 import { createFileWithContent } from "../utils/createFileWithContent";
 
 // Officially supported plugins, defined in `/plugins/**` packages.
-const AVAILABLE_PLUGINS = ["unocss", "tailwindcss"];
+export const AVAILABLE_PLUGINS = ["unocss", "tailwindcss"];
 
 /**
  * @description Installs a Stein plugin and adds it to the `stein.config.{ts,js,mjs,mts,cts}` file.
