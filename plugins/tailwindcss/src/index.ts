@@ -16,6 +16,7 @@ export type { TailwindConfig };
 
 const TW_INJECT_ID = "__stein@tailwindcss.css";
 const TW_DEFAULT_CONFIG_NAME = "tailwind.config";
+// biome-ignore lint/style/useTemplate: <explanation>
 const TW_DEFAULT_CONFIG_PATH = TW_DEFAULT_CONFIG_NAME + ".js";
 
 interface Config {
@@ -110,6 +111,7 @@ export default definePlugin<Partial<Config>>(
 );
 
 const readTailwindConfig = async (
+  // biome-ignore lint/style/useDefaultParameterLast: <explanation>
   configPath = TW_DEFAULT_CONFIG_PATH,
   inlineConfig: TailwindConfig,
 ): Promise<TailwindConfig> => {

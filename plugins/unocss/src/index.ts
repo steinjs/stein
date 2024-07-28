@@ -19,6 +19,7 @@ export * from "unocss";
 
 const UNO_INJECT_ID = "__stein@unocss";
 const UNO_DEFAULT_CONFIG_NAME = "uno.config";
+// biome-ignore lint/style/useTemplate: <explanation>
 const UNO_DEFAULT_CONFIG_PATH = UNO_DEFAULT_CONFIG_NAME + ".ts";
 
 interface Config {
@@ -142,6 +143,7 @@ export default definePlugin<Partial<Config>>(
 );
 
 const readUnoConfig = async (
+  // biome-ignore lint/style/useDefaultParameterLast: <explanation>
   configPath = UNO_DEFAULT_CONFIG_PATH,
   inlineConfig: UnoConfig,
 ): Promise<UnoConfig> => {
