@@ -1,5 +1,11 @@
 # @steinjs/cli
 
+## 0.2.1
+
+### Patch Changes
+
+- 764070e: Display available integrations when passing no args to the add command (or using --help)
+
 ## 0.2.0
 
 ### Minor Changes
