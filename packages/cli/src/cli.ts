@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 import { Command } from "commander";
+import color from "picocolors";
+
 import { version } from "../package.json";
 import { buildModule } from "./modules/build";
 import { createModule } from "./modules/create";
 import { devModule } from "./modules/dev";
 import { addModule } from "./modules/add";
+import { AVAILABLE_PLUGINS } from "./installers/plugins";
+import { AVAILABLE_TOOLS } from "./installers/tools";
 
 const program = new Command();
 
@@ -16,10 +20,17 @@ program
 program
   .command("add")
   .description(
-    "add an integration (plugin or tool) to an existing stein project",
+    "Add an integration (plugin or tool) to an existing stein project",
   )
   .argument("<integrations...>", "integrations to add")
-  .action(addModule);
+  .action(addModule)
+  .exitOverride(() => {
+    console.log(
+      `\n${color.bold(color.italic(color.cyan("Available integrations:")))} \n` +
+        `${color.underline("Plugins:")} \n${AVAILABLE_PLUGINS.join(" ")}\n\n` +
+        `${color.underline("Tools:")} \n${AVAILABLE_TOOLS.join(" ")}`,
+    );
+  });
 
 program
   .command("dev")
