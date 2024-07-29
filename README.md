@@ -23,7 +23,9 @@ The process should look something like this:
 For more detailed instructions, please reference our [Getting Started](https://stein.js.org/docs/core/) guide.
 
 ## ⁉️ Why Stein?
-Stein was created to fill a niche in the SolidJS community. We aim to create a framework that simplifies the initial project setup and provides a rich experience for a SolidJS SPA. SolidStart is a great choice if you wish to use SSR, but if you prefer using an SPA, Stein is the right choice for you.
+We aim to create a framework that simplifies the initial project setup and provides a rich experience for a SolidJS SPA.
+Our core philosophy is "do one thing and do it well", and in this case we just want an experience which is close to building a SPA using just Vite, but with some extra bells and whistles to improve developer experience. 
+We are not trying to compete with the current offerings in the ecosystem but rather provide an alternative with some opiniated defaults provided by us.
 
 ### Features:
 - A solid foundation for your SolidJS SPA
