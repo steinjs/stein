@@ -1,5 +1,11 @@
 # create-stein
 
+## 0.0.9
+
+### Patch Changes
+
+- 20fdc67: Rename bin entry to create-stein to resolve naming conflicts with main CLI
+
 ## 0.0.8
 
 ### Patch Changes
