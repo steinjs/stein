@@ -1,9 +1,9 @@
 # Contributing to Stein
 Thank you for showing interest into contributing to Stein! First off, some general information:
-Kanri is written in TypeScript and is licensed under the MIT license. The landing page and docs site use Next.js and Fumadocs and [can be found here](https://stein.js.org). The documentation is still a big work in progress and if you would like to help, please reach out!
+Stein is written in TypeScript and is licensed under the MIT license. The landing page and docs site use Next.js and Fumadocs and [can be found here](https://stein.js.org). The documentation is still a big work in progress and if you would like to help, please reach out!
 
 
-## Here’s the process for contributing to Kanri
+## Here’s the process for contributing to Stein
 * Fork the Stein repository, and clone it locally on your development machine.
 * Find issues that are up for grabs in GitHub or look at the things that are todo or work in progress in the roadmap (projects tab). Comment to let everyone know you’re working on it and let a core contributor assign the issue to you. If there’s no issue for what you want to work on, you are free to continue with your changes but consider opening an issue or a discussion to make sure what you want to add is in line with the project vision.
 * Make sure you have the Biome extension added to your code editor to ensure uniform code formatting.
