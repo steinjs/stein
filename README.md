@@ -53,4 +53,4 @@ If you want to get in touch with the community and stay up to date, feel free to
 ## 📜 License
 We love open source and are grateful for any support we receive from the community. Stein is free and open source and licensed under the MIT license.
 
-*Copyright © 2024 Stein contributors*
+*Copyright © 2024-2025 Stein contributors*
